@@ -132,6 +132,15 @@ final class UserDetailViewController: UIViewController {
         profileButton.addTarget(self, action: #selector(openProfileTapped), for: .touchUpInside)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard UIAccessibility.isVoiceOverRunning else { return }
+        UIAccessibility.post(
+            notification: .screenChanged,
+            argument: "Profile of \(viewModel.displayName). \(viewModel.formattedReputation)."
+        )
+    }
+
     // MARK: - Setup
 
     private func setupLayout() {
