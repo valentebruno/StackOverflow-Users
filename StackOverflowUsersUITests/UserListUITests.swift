@@ -83,6 +83,24 @@ final class UserListUITests: XCTestCase {
         XCTAssertFalse(app.cells["user-cell-303"].exists)
     }
 
+    // MARK: - Detail navigation
+
+    func test_tappingCell_pushesDetailScreenWithProfileAction() {
+        app.launch()
+
+        let cell = app.cells["user-cell-101"]
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        cell.staticTexts["Jon Skeet"].tap()
+
+        // Push animation
+        let navBar = app.navigationBars["Jon Skeet"]
+        XCTAssertTrue(navBar.waitForExistence(timeout: 3))
+
+        let openProfile = app.buttons["open-profile-button"]
+        XCTAssertTrue(openProfile.waitForExistence(timeout: 2))
+        XCTAssertTrue(openProfile.isHittable)
+    }
+
     // MARK: - Helpers
 
     private func selectFollowedFilter() {

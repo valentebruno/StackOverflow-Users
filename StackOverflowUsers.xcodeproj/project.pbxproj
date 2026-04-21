@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		036A7A26011696256B3C4BAB /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214EC24B8EDFC1E54E4D39FA /* UserCell.swift */; };
+		0AB40F93DDC2C2E07067152A /* UserDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D712C3CE5320DE785E61EF /* UserDetailViewModelTests.swift */; };
 		0B14CFF8A2D94DF07CDA9D7F /* AppErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E985991A94298E278E1C2844 /* AppErrorTests.swift */; };
 		13F87AA5E9B233816718EFC4 /* FollowRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96FA6AE28B488B688E9A370 /* FollowRepositoryTests.swift */; };
 		1AF1A9355B5FEE1FF10129CC /* UserCellModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */; };
@@ -34,12 +35,14 @@
 		B0CF006D65F37149D7509678 /* DecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B3DB6436A439A5F1B1E872 /* DecodingTests.swift */; };
 		BA1498BD161A0227FF61E8BF /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */; };
 		C01455A7BDE0DF10F47800E7 /* UserPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67148707C19EF66F223D5742 /* UserPage.swift */; };
+		C0296036D365B38F16B40AAD /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C036202654C7052A4E46E6AB /* UserDetailViewController.swift */; };
 		C0CAFCA4CC22FE9386C480CE /* InitialsImageGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CDF9EA902666A3CD5AA85 /* InitialsImageGeneratorTests.swift */; };
 		C5CE871562AAB8F7D7202BE0 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C32C8912CB315F609390E61 /* MockURLProtocol.swift */; };
 		DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48976274696155B90FBD74CB /* InitialsImageGenerator.swift */; };
 		E559F19932881EB8482F5B27 /* UserListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */; };
 		F21371EED23E667BC3982C43 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54436AAB6DD9FF572643DFCD /* Mocks.swift */; };
 		FB7D05C5340A4354D0F0C7FC /* UserListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C442B25B02B708E3B936355A /* UserListUITests.swift */; };
+		FE140714BB957F6DFD3D1A46 /* UserDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C57290FA06727F628AA72AF /* UserDetailViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +70,7 @@
 		214EC24B8EDFC1E54E4D39FA /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		292E95D7B6F51D424E1B85F7 /* UserServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserServiceTests.swift; sourceTree = "<group>"; };
 		3C32C8912CB315F609390E61 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
+		46D712C3CE5320DE785E61EF /* UserDetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModelTests.swift; sourceTree = "<group>"; };
 		48976274696155B90FBD74CB /* InitialsImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialsImageGenerator.swift; sourceTree = "<group>"; };
 		4BD0DEE1BBD1ECA06085A013 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		54436AAB6DD9FF572643DFCD /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
@@ -82,12 +86,14 @@
 		83701DCD9AE51120AC2AC9E5 /* FollowRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowRepository.swift; sourceTree = "<group>"; };
 		84098B4EBEDB4140F30EB0C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8A9C31F5499BEB2C83C5B924 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		8C57290FA06727F628AA72AF /* UserDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewModel.swift; sourceTree = "<group>"; };
 		8FC3BD4B219D42BDCEF381FF /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		9478FDD56E504FDE9EAED78B /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		965CDF9EA902666A3CD5AA85 /* InitialsImageGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialsImageGeneratorTests.swift; sourceTree = "<group>"; };
 		A18B8EB755F00FF057C56185 /* String+HTMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLEntities.swift"; sourceTree = "<group>"; };
 		A9E5A054471B38D4BFF7A537 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B4FDAAB5FB7874E92A5F3D95 /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
+		C036202654C7052A4E46E6AB /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		C442B25B02B708E3B936355A /* UserListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListUITests.swift; sourceTree = "<group>"; };
 		C96FA6AE28B488B688E9A370 /* FollowRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowRepositoryTests.swift; sourceTree = "<group>"; };
 		DF900077347359BD2D020EF5 /* UserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCache.swift; sourceTree = "<group>"; };
@@ -133,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				A98713AE79B56D99DDF6BCA5 /* Shared */,
+				EA80E2E8FBE1DAD0C1A9B908 /* UserDetail */,
 				D2A5248292CFC5D248F0B15F /* UserList */,
 			);
 			path = Presentation;
@@ -288,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */,
+				46D712C3CE5320DE785E61EF /* UserDetailViewModelTests.swift */,
 				765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */,
 			);
 			path = Presentation;
@@ -308,6 +316,15 @@
 				48976274696155B90FBD74CB /* InitialsImageGenerator.swift */,
 			);
 			path = ImageLoading;
+			sourceTree = "<group>";
+		};
+		EA80E2E8FBE1DAD0C1A9B908 /* UserDetail */ = {
+			isa = PBXGroup;
+			children = (
+				C036202654C7052A4E46E6AB /* UserDetailViewController.swift */,
+				8C57290FA06727F628AA72AF /* UserDetailViewModel.swift */,
+			);
+			path = UserDetail;
 			sourceTree = "<group>";
 		};
 		FDFF2AF72DE7965989B0524A /* Persistence */ = {
@@ -450,6 +467,8 @@
 				367B1E58F5736731C532C177 /* User.swift in Sources */,
 				69DEF7E44E8A6BA135C4218F /* UserCache.swift in Sources */,
 				036A7A26011696256B3C4BAB /* UserCell.swift in Sources */,
+				C0296036D365B38F16B40AAD /* UserDetailViewController.swift in Sources */,
+				FE140714BB957F6DFD3D1A46 /* UserDetailViewModel.swift in Sources */,
 				562E69F712816A1662562C32 /* UserListViewController.swift in Sources */,
 				BA1498BD161A0227FF61E8BF /* UserListViewModel.swift in Sources */,
 				C01455A7BDE0DF10F47800E7 /* UserPage.swift in Sources */,
@@ -471,6 +490,7 @@
 				C5CE871562AAB8F7D7202BE0 /* MockURLProtocol.swift in Sources */,
 				F21371EED23E667BC3982C43 /* Mocks.swift in Sources */,
 				1AF1A9355B5FEE1FF10129CC /* UserCellModelTests.swift in Sources */,
+				0AB40F93DDC2C2E07067152A /* UserDetailViewModelTests.swift in Sources */,
 				E559F19932881EB8482F5B27 /* UserListViewModelTests.swift in Sources */,
 				AEA9B13EAE90CD316830B32A /* UserServiceTests.swift in Sources */,
 			);
