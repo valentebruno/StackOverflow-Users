@@ -33,18 +33,41 @@ The target is iPhone-only in portrait. I scoped it deliberately rather than ship
 
 MVVM with a lightweight coordinator.
 
-```
-App/                Scene + coordinator bootstrap
-Domain/             User, StackExchangeResponse, AppError — pure value types
-Data/
-  Network/          UserService: URLSession + decoder, maps errors into AppError
-  Persistence/      UserDefaultsFollowRepository: Set<Int> behind an unfair lock
-                    FileUserCache: JSON-on-disk cache for offline fallback
-  ImageLoading/     ImageLoader actor: NSCache + in-flight dedup
-Presentation/
-  UserList/         View model, view controller, cell, cell model
-  Shared/           EmptyStateView
-Foundation/         String+HTMLEntities
+```text
+StackOverflowUsers/
+├── App/
+│   ├── AppDelegate.swift
+│   ├── SceneDelegate.swift
+│   ├── UITestingHooks.swift          launch-flag hooks for XCUITest
+│   └── Coordinator/
+│       ├── Coordinator.swift
+│       └── AppCoordinator.swift
+├── Domain/                           pure value types
+│   ├── User.swift
+│   ├── UserPage.swift
+│   ├── StackExchangeResponse.swift   generic API envelope
+│   └── AppError.swift
+├── Data/
+│   ├── Network/
+│   │   └── UserService.swift         URLSession + decoder + error mapping
+│   ├── Persistence/
+│   │   ├── FollowRepository.swift    Set<Int> behind OSAllocatedUnfairLock
+│   │   └── UserCache.swift           JSON-on-disk cache for offline fallback
+│   └── ImageLoading/
+│       ├── ImageLoader.swift         actor, NSCache, in-flight dedup
+│       └── InitialsImageGenerator.swift
+├── Presentation/
+│   ├── UserList/
+│   │   ├── UserListViewController.swift
+│   │   ├── UserListViewModel.swift   ViewState state machine, no UIKit
+│   │   └── UserCell.swift
+│   └── Shared/
+│       └── EmptyStateView.swift
+├── Foundation/
+│   └── String+HTMLEntities.swift
+└── Resources/
+    ├── Assets.xcassets
+    └── Info.plist
 ```
 
 A few things worth calling out:
