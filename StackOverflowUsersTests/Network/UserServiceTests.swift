@@ -18,6 +18,33 @@ final class UserServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Request shape
+
+    func test_fetchTopUsers_buildsExpectedHTTPSRequest() async throws {
+        let captured = CapturedRequest()
+        MockURLProtocol.requestHandler = { request in
+            captured.store(request)
+            return (Fixtures.httpResponse(), Fixtures.data(Fixtures.successUsers))
+        }
+
+        _ = try await service.fetchTopUsers()
+
+        let request = try XCTUnwrap(captured.value)
+        let url = try XCTUnwrap(request.url)
+        let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
+
+        XCTAssertEqual(components.scheme, "https")
+        XCTAssertEqual(components.host, "api.stackexchange.com")
+        XCTAssertEqual(components.path, "/2.2/users")
+
+        let items = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).map { ($0.name, $0.value) })
+        XCTAssertEqual(items["page"],     "1")
+        XCTAssertEqual(items["pagesize"], "20")
+        XCTAssertEqual(items["order"],    "desc")
+        XCTAssertEqual(items["sort"],     "reputation")
+        XCTAssertEqual(items["site"],     "stackoverflow")
+    }
+
     // MARK: - Success
 
     func test_fetchTopUsers_onSuccess_returnsDecodedAndSanitizedUsers() async throws {
@@ -84,6 +111,23 @@ final class UserServiceTests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    // MARK: - CapturedRequest
+
+    private final class CapturedRequest: @unchecked Sendable {
+        private let lock = NSLock()
+        private var _value: URLRequest?
+
+        var value: URLRequest? {
+            lock.lock(); defer { lock.unlock() }
+            return _value
+        }
+
+        func store(_ request: URLRequest) {
+            lock.lock(); defer { lock.unlock() }
+            _value = request
+        }
+    }
 
     private func assertThrows(_ expected: AppError, file: StaticString = #filePath, line: UInt = #line) async {
         do {
