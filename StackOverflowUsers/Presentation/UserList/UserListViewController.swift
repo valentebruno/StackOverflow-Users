@@ -2,6 +2,7 @@ import UIKit
 
 // MARK: - UserListViewController
 
+@MainActor
 final class UserListViewController: UIViewController {
 
     // MARK: - Sections

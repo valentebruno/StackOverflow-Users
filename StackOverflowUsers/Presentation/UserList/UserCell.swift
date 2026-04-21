@@ -2,6 +2,7 @@ import UIKit
 
 // MARK: - UserCell
 
+@MainActor
 final class UserCell: UITableViewCell {
 
     static let reuseIdentifier = "UserCell"
@@ -107,7 +108,7 @@ final class UserCell: UITableViewCell {
 
         guard let url = model.profileImageURL else { return }
 
-        imageLoadTask = Task { [weak self] in
+        imageLoadTask = Task { @MainActor [weak self] in
             let loaded = await imageLoader.image(for: url)
             guard !Task.isCancelled, let self else { return }
             self.avatarImageView.image = loaded ?? placeholder

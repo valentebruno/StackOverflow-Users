@@ -2,6 +2,7 @@ import UIKit
 
 // MARK: - EmptyStateView
 
+@MainActor
 final class EmptyStateView: UIView {
 
     // MARK: - Output
