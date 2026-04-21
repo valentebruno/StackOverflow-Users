@@ -79,7 +79,9 @@ Some users' `profile_image` URLs still point to Gravatar over plain `http://`. A
 
 ## Tests
 
-All tests run locally — there is no CI workflow on this repo (GitHub Actions on private accounts charge a 10x minute multiplier for macOS runners, and I'd rather not ship a red badge than wire in paid minutes for a take-home).
+GitHub Actions workflow: [`.github/workflows/ios.yml`](.github/workflows/ios.yml) — `macos-latest`, picks the newest available iPhone simulator at runtime, runs `build-for-testing` then `test-without-building`, and uploads the `.xcresult` bundle as an artifact.
+
+To run the same thing locally:
 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
