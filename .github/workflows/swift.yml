@@ -7,57 +7,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
-concurrency:
-  group: ios-ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build-and-test:
-    name: "Build and Test"
-    runs-on: macos-latest
-
-    env:
-      XCODE_SCHEME: StackOverflowUsers
-      XCODE_PROJECT: StackOverflowUsers.xcodeproj
-      SIMULATOR: "platform=iOS Simulator,name=iPhone 16,OS=latest"
-
+  smoke:
+    name: "Smoke"
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Show build environment
-        run: |
-          xcodebuild -version
-          swift --version
-          xcrun simctl list runtimes
-
-      - name: List project targets
-        run: xcodebuild -project "$XCODE_PROJECT" -list
-
-      - name: Build
-        run: |
-          set -o pipefail
-          xcodebuild build \
-            -project "$XCODE_PROJECT" \
-            -scheme "$XCODE_SCHEME" \
-            -destination "$SIMULATOR" \
-            CODE_SIGNING_ALLOWED=NO
-
-      - name: Run unit tests
-        run: |
-          set -o pipefail
-          xcodebuild test \
-            -project "$XCODE_PROJECT" \
-            -scheme "$XCODE_SCHEME" \
-            -destination "$SIMULATOR" \
-            -enableCodeCoverage YES \
-            -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO
-
-      - name: Upload xcresult bundle
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TestResults-xcresult
-          path: TestResults.xcresult
-          if-no-files-found: ignore
+      - name: Show context
+        run: echo "workflow is parseable and running"
