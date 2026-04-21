@@ -1,0 +1,46 @@
+name: StackOverflowUsers
+options:
+  bundleIdPrefix: com.brunovalente
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    IPHONEOS_DEPLOYMENT_TARGET: 16.0
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  StackOverflowUsers:
+    type: application
+    platform: iOS
+    sources:
+      - path: StackOverflowUsers
+    resources:
+      - path: StackOverflowUsers/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.brunovalente.StackOverflowUsers
+        PRODUCT_NAME: StackOverflowUsers
+        INFOPLIST_FILE: StackOverflowUsers/Resources/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+  StackOverflowUsersTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: StackOverflowUsersTests
+    dependencies:
+      - target: StackOverflowUsers
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.brunovalente.StackOverflowUsersTests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/StackOverflowUsers.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StackOverflowUsers"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  StackOverflowUsers:
+    build:
+      targets:
+        StackOverflowUsers: all
+    test:
+      targets:
+        - StackOverflowUsersTests
+      gatherCoverageData: false
