@@ -8,6 +8,12 @@ settings:
     SWIFT_VERSION: 5.0
     IPHONEOS_DEPLOYMENT_TARGET: 16.0
     TARGETED_DEVICE_FAMILY: "1"
+    GCC_TREAT_WARNINGS_AS_ERRORS: YES
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+    CLANG_WARN_DOCUMENTATION_COMMENTS: YES
+    CLANG_WARN_UNGUARDED_AVAILABILITY: YES_AGGRESSIVE
+    GCC_WARN_SHADOW: YES
+    GCC_WARN_UNUSED_FUNCTION: YES
 targets:
   StackOverflowUsers:
     type: application
@@ -22,6 +28,7 @@ targets:
         PRODUCT_NAME: StackOverflowUsers
         INFOPLIST_FILE: StackOverflowUsers/Resources/Info.plist
         GENERATE_INFOPLIST_FILE: NO
+        STACK_EXCHANGE_API_KEY: ""
   StackOverflowUsersTests:
     type: bundle.unit-test
     platform: iOS

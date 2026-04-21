@@ -371,7 +371,7 @@ private final class StateRecorder {
             self.continuation = continuation
             timeoutTask = Task { [weak self, timeout] in
                 try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-                await self?.resume()
+                self?.resume()
             }
         }
     }
