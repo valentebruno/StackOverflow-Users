@@ -36,3 +36,9 @@ Carthage/Build/
 # Playgrounds
 timeline.xctimeline
 playground.xcworkspace
+
+# AI assistant scratch folders
+.claude/
+.cursor/
+.aider*
+
