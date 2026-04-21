@@ -53,7 +53,9 @@ enum InitialsImageGenerator {
     ]
 
     private static func palette(for seed: String) -> (UIColor, UIColor) {
-        let hash = abs(seed.hashValue)
-        return swatches[hash % swatches.count]
+        let hash = seed.unicodeScalars.reduce(UInt32(0)) { acc, scalar in
+            acc &* 31 &+ scalar.value
+        }
+        return swatches[Int(hash % UInt32(swatches.count))]
     }
 }
