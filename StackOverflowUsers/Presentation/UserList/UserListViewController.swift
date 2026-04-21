@@ -277,6 +277,13 @@ final class UserListViewController: UIViewController {
 
 extension UserListViewController: UITableViewDelegate {
 
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let threshold: CGFloat = 240
+        let distanceToBottom = scrollView.contentSize.height - (scrollView.contentOffset.y + scrollView.bounds.height)
+        guard scrollView.contentSize.height > 0, distanceToBottom < threshold else { return }
+        viewModel.loadNextPage()
+    }
+
     func tableView(
         _ tableView: UITableView,
         leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath

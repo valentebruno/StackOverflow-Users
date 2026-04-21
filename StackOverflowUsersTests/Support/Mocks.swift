@@ -6,18 +6,26 @@ import Foundation
 final class MockUserService: UserServiceProtocol, @unchecked Sendable {
 
     enum Outcome {
-        case success([User])
+        case success([User], hasMore: Bool = false)
         case failure(AppError)
     }
 
     var outcome: Outcome = .success([])
+    var pageOutcomes: [Int: Outcome] = [:]
     private(set) var fetchCallCount = 0
+    private(set) var lastPageRequested: Int?
+    private(set) var lastPageSizeRequested: Int?
 
-    func fetchTopUsers() async throws -> [User] {
+    func fetchTopUsers(page: Int, pageSize: Int) async throws -> UserPage {
         fetchCallCount += 1
+        lastPageRequested = page
+        lastPageSizeRequested = pageSize
+        let outcome = pageOutcomes[page] ?? self.outcome
         switch outcome {
-        case .success(let users):  return users
-        case .failure(let error):  throw error
+        case .success(let users, let hasMore):
+            return UserPage(users: users, hasMore: hasMore)
+        case .failure(let error):
+            throw error
         }
     }
 }
