@@ -1,0 +1,10 @@
+// Settings shared between Development and Production.
+// Config-specific files include this and override anything they need.
+
+APP_BUNDLE_ID_BASE = com.brunovalente.StackOverflowUsers
+
+// xcconfig treats `//` as a line comment; split with $() to stop the URL being truncated.
+APP_API_BASE_URL = https:/$()/api.stackexchange.com/2.2
+
+// Set via a local .xcconfig or CI environment; never committed.
+STACK_EXCHANGE_API_KEY =
