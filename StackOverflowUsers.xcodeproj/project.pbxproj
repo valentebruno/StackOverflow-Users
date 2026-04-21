@@ -19,6 +19,7 @@
 		562E69F712816A1662562C32 /* UserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FDAAB5FB7874E92A5F3D95 /* UserListViewController.swift */; };
 		56BF7D2506ABB1B429DB8A72 /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC3BD4B219D42BDCEF381FF /* ImageLoader.swift */; };
 		59EFBE07E9B1D93559DF27D4 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD0DEE1BBD1ECA06085A013 /* AppError.swift */; };
+		5E3C186212C74DA691E36284 /* UITestingHooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7463824815493DD6A80E6368 /* UITestingHooks.swift */; };
 		601BBE0EFC873B22983D72EB /* FollowRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83701DCD9AE51120AC2AC9E5 /* FollowRepository.swift */; };
 		65A5B40BE94C3166E9E5F245 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3802ABF99F2CB18D07BABF /* AppCoordinator.swift */; };
 		67FBB2087A48F60A885C694F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84098B4EBEDB4140F30EB0C4 /* Assets.xcassets */; };
@@ -38,9 +39,17 @@
 		DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48976274696155B90FBD74CB /* InitialsImageGenerator.swift */; };
 		E559F19932881EB8482F5B27 /* UserListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */; };
 		F21371EED23E667BC3982C43 /* Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54436AAB6DD9FF572643DFCD /* Mocks.swift */; };
+		FB7D05C5340A4354D0F0C7FC /* UserListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C442B25B02B708E3B936355A /* UserListUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7F97260914C09E09B46B1FD3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0E355918FDEC0E6362DD19CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26D2FE6F1CD0EBCCC8F1043C;
+			remoteInfo = StackOverflowUsers;
+		};
 		8CA62F05BA1C69727079FDF0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0E355918FDEC0E6362DD19CD /* Project object */;
@@ -65,6 +74,7 @@
 		596830B156A6954509F30542 /* FileUserCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUserCacheTests.swift; sourceTree = "<group>"; };
 		5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellModelTests.swift; sourceTree = "<group>"; };
 		67148707C19EF66F223D5742 /* UserPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPage.swift; sourceTree = "<group>"; };
+		7463824815493DD6A80E6368 /* UITestingHooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestingHooks.swift; sourceTree = "<group>"; };
 		765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModelTests.swift; sourceTree = "<group>"; };
 		780D52EFE9BB7653753F648C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7A9B3CE989F6F897CD080032 /* ImageLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoaderTests.swift; sourceTree = "<group>"; };
@@ -78,10 +88,12 @@
 		A18B8EB755F00FF057C56185 /* String+HTMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLEntities.swift"; sourceTree = "<group>"; };
 		A9E5A054471B38D4BFF7A537 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B4FDAAB5FB7874E92A5F3D95 /* UserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewController.swift; sourceTree = "<group>"; };
+		C442B25B02B708E3B936355A /* UserListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListUITests.swift; sourceTree = "<group>"; };
 		C96FA6AE28B488B688E9A370 /* FollowRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowRepositoryTests.swift; sourceTree = "<group>"; };
 		DF900077347359BD2D020EF5 /* UserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCache.swift; sourceTree = "<group>"; };
 		E2B3DB6436A439A5F1B1E872 /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		E41674755A509D5978BFA7F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		E5A3BAACEA0A42D9F85401F6 /* StackOverflowUsersUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = StackOverflowUsersUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
 		E985991A94298E278E1C2844 /* AppErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppErrorTests.swift; sourceTree = "<group>"; };
 		EB4D143964C7757C5DAEF56A /* Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
@@ -144,6 +156,7 @@
 			children = (
 				045FF673C5A7ED735D6CA21D /* StackOverflowUsers.app */,
 				0D16649A311B26C99B1E2346 /* StackOverflowUsersTests.xctest */,
+				E5A3BAACEA0A42D9F85401F6 /* StackOverflowUsersUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,6 +174,7 @@
 			children = (
 				E41674755A509D5978BFA7F4 /* AppDelegate.swift */,
 				A9E5A054471B38D4BFF7A537 /* SceneDelegate.swift */,
+				7463824815493DD6A80E6368 /* UITestingHooks.swift */,
 				229CBBC1F041653916D9AB7E /* Coordinator */,
 			);
 			path = App;
@@ -247,6 +261,7 @@
 			children = (
 				3F590FBA7BD1DDE852842F77 /* StackOverflowUsers */,
 				D0A26303F8AC43C98A420BB3 /* StackOverflowUsersTests */,
+				D3AF357E61C19FDC6087E545 /* StackOverflowUsersUITests */,
 				41A9B66A214644E97AA5D7AC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -259,6 +274,14 @@
 				E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */,
 			);
 			path = UserList;
+			sourceTree = "<group>";
+		};
+		D3AF357E61C19FDC6087E545 /* StackOverflowUsersUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C442B25B02B708E3B936355A /* UserListUITests.swift */,
+			);
+			path = StackOverflowUsersUITests;
 			sourceTree = "<group>";
 		};
 		D6280D6A6ACACAF83397C7D0 /* Presentation */ = {
@@ -335,6 +358,24 @@
 			productReference = 045FF673C5A7ED735D6CA21D /* StackOverflowUsers.app */;
 			productType = "com.apple.product-type.application";
 		};
+		317B3A98717586CFB0181D2D /* StackOverflowUsersUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D96440CE45EEF10EF01834BA /* Build configuration list for PBXNativeTarget "StackOverflowUsersUITests" */;
+			buildPhases = (
+				47C8A182D48CEBAB6C0BC65C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3CFE755AF46F6E94AA3CF807 /* PBXTargetDependency */,
+			);
+			name = StackOverflowUsersUITests;
+			packageProductDependencies = (
+			);
+			productName = StackOverflowUsersUITests;
+			productReference = E5A3BAACEA0A42D9F85401F6 /* StackOverflowUsersUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -344,6 +385,9 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					317B3A98717586CFB0181D2D = {
+						TestTargetID = 26D2FE6F1CD0EBCCC8F1043C;
+					};
 				};
 			};
 			buildConfigurationList = E3712F263CACD31FCE67EF8A /* Build configuration list for PBXProject "StackOverflowUsers" */;
@@ -362,6 +406,7 @@
 			targets = (
 				26D2FE6F1CD0EBCCC8F1043C /* StackOverflowUsers */,
 				17030BDD592629A6A340EE47 /* StackOverflowUsersTests */,
+				317B3A98717586CFB0181D2D /* StackOverflowUsersUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -378,6 +423,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		47C8A182D48CEBAB6C0BC65C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB7D05C5340A4354D0F0C7FC /* UserListUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		4979EDFD7BF2BEFCEE2CFEC8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -393,6 +446,7 @@
 				9B9DF1F67C5CE0936C5AD09C /* SceneDelegate.swift in Sources */,
 				78185A73440F3E3AA7C937FF /* StackExchangeResponse.swift in Sources */,
 				AA83F8D675471F0139748C04 /* String+HTMLEntities.swift in Sources */,
+				5E3C186212C74DA691E36284 /* UITestingHooks.swift in Sources */,
 				367B1E58F5736731C532C177 /* User.swift in Sources */,
 				69DEF7E44E8A6BA135C4218F /* UserCache.swift in Sources */,
 				036A7A26011696256B3C4BAB /* UserCell.swift in Sources */,
@@ -430,9 +484,31 @@
 			target = 26D2FE6F1CD0EBCCC8F1043C /* StackOverflowUsers */;
 			targetProxy = 8CA62F05BA1C69727079FDF0 /* PBXContainerItemProxy */;
 		};
+		3CFE755AF46F6E94AA3CF807 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 26D2FE6F1CD0EBCCC8F1043C /* StackOverflowUsers */;
+			targetProxy = 7F97260914C09E09B46B1FD3 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0B31585458EB4CDC79FC1A8B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brunovalente.StackOverflowUsersUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = StackOverflowUsers;
+			};
+			name = Release;
+		};
 		29D252A84416E25D47A72717 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -448,6 +524,23 @@
 				PRODUCT_NAME = StackOverflowUsers;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		403B5F9A9870C65CE8EC0406 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brunovalente.StackOverflowUsersUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = StackOverflowUsers;
 			};
 			name = Debug;
 		};
@@ -632,6 +725,15 @@
 			buildConfigurations = (
 				41A965994852AD638867CA45 /* Debug */,
 				88A90118251EFEC7735765CF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D96440CE45EEF10EF01834BA /* Build configuration list for PBXNativeTarget "StackOverflowUsersUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				403B5F9A9870C65CE8EC0406 /* Debug */,
+				0B31585458EB4CDC79FC1A8B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
