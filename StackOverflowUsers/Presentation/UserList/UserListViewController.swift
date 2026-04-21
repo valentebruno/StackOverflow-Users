@@ -48,12 +48,12 @@ final class UserListViewController: UIViewController {
         return control
     }()
 
-    private lazy var filterControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: ["All", "Followed"])
-        control.selectedSegmentIndex = 0
-        control.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
-        control.accessibilityIdentifier = "filter-control"
-        return control
+    private lazy var filterHeaderView: FilterHeaderView = {
+        let header = FilterHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 56))
+        header.onFilterChanged = { [weak self] filter in
+            self?.viewModel.setFilter(filter)
+        }
+        return header
     }()
 
     private lazy var staleBannerLabel: UILabel = {
@@ -108,7 +108,7 @@ final class UserListViewController: UIViewController {
         tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.refreshControl = refreshControl
-        tableView.tableHeaderView = makeFilterHeader()
+        tableView.tableHeaderView = filterHeaderView
 
         NSLayoutConstraint.activate([
             staleBannerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -175,8 +175,8 @@ final class UserListViewController: UIViewController {
             tableView.isHidden = true
             emptyStateView.isHidden = false
             emptyStateView.configure(
-                title:       Self.emptyTitle(for: reason),
-                message:     Self.emptyMessage(for: reason),
+                title:       UserListStateCopy.emptyTitle(for: reason),
+                message:     UserListStateCopy.emptyMessage(for: reason),
                 showsRetry:  false,
                 systemImage: "person.2.slash"
             )
@@ -190,7 +190,7 @@ final class UserListViewController: UIViewController {
                 tableView.isHidden = true
                 emptyStateView.isHidden = false
                 emptyStateView.configure(
-                    title:   Self.errorTitle(for: error),
+                    title:   UserListStateCopy.errorTitle(for: error),
                     message: error.userFacingMessage
                 )
             } else {
@@ -205,36 +205,13 @@ final class UserListViewController: UIViewController {
     private func setStaleBanner(visible: Bool, error: AppError? = nil) {
         staleBannerLabel.isHidden = !visible
         guard visible else { return }
-        let reason = error.map(Self.errorTitle(for:)) ?? "Offline"
+        let reason = error.map(UserListStateCopy.errorTitle(for:)) ?? "Offline"
         staleBannerLabel.text = "Showing saved users · \(reason)"
-    }
-
-    private static func emptyTitle(for reason: UserListViewModel.EmptyReason) -> String {
-        switch reason {
-        case .nothingFollowed: return "No followed users yet"
-        }
-    }
-
-    private static func emptyMessage(for reason: UserListViewModel.EmptyReason) -> String {
-        switch reason {
-        case .nothingFollowed:
-            return "Tap Follow on any user to keep a shortcut here."
-        }
-    }
-
-    private static func errorTitle(for error: AppError) -> String {
-        switch error {
-        case .networkUnavailable: return "You're offline"
-        case .serverError:        return "Server trouble"
-        case .apiError:           return "API error"
-        case .decodingError:      return "Unexpected response"
-        case .noResults:          return "No users found"
-        }
     }
 
     private func presentErrorBanner(for error: AppError) {
         let alert = UIAlertController(
-            title: Self.errorTitle(for: error),
+            title: UserListStateCopy.errorTitle(for: error),
             message: error.userFacingMessage,
             preferredStyle: .alert
         )
@@ -289,26 +266,6 @@ final class UserListViewController: UIViewController {
 
     @objc private func pullToRefresh() {
         viewModel.load()
-    }
-
-    @objc private func filterChanged() {
-        let filter: UserListViewModel.Filter = filterControl.selectedSegmentIndex == 1 ? .followed : .all
-        viewModel.setFilter(filter)
-    }
-
-    // MARK: - Header
-
-    private func makeFilterHeader() -> UIView {
-        let container = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 56))
-        container.autoresizingMask = .flexibleWidth
-        filterControl.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(filterControl)
-        NSLayoutConstraint.activate([
-            filterControl.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            filterControl.leadingAnchor.constraint(equalTo: container.layoutMarginsGuide.leadingAnchor, constant: 8),
-            filterControl.trailingAnchor.constraint(equalTo: container.layoutMarginsGuide.trailingAnchor, constant: -8)
-        ])
-        return container
     }
 }
 

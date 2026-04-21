@@ -190,34 +190,9 @@ final class UserDetailViewController: UIViewController {
             return
         }
         badgesStack.isHidden = false
-        badgesStack.addArrangedSubview(Self.makeBadgePill(color: .systemYellow, count: viewModel.goldBadges,   label: "gold"))
-        badgesStack.addArrangedSubview(Self.makeBadgePill(color: .systemGray,   count: viewModel.silverBadges, label: "silver"))
-        badgesStack.addArrangedSubview(Self.makeBadgePill(color: .systemBrown,  count: viewModel.bronzeBadges, label: "bronze"))
-    }
-
-    private static func makeBadgePill(color: UIColor, count: Int, label: String) -> UIView {
-        let dot = UIView()
-        dot.backgroundColor = color
-        dot.layer.cornerRadius = 6
-        dot.translatesAutoresizingMaskIntoConstraints = false
-
-        let text = UILabel()
-        text.font = .preferredFont(forTextStyle: .callout)
-        text.adjustsFontForContentSizeCategory = true
-        text.text = "\(count) \(label)"
-
-        let stack = UIStackView(arrangedSubviews: [dot, text])
-        stack.axis = .horizontal
-        stack.spacing = 6
-        stack.alignment = .center
-        stack.accessibilityLabel = "\(count) \(label) badges"
-        stack.isAccessibilityElement = true
-
-        NSLayoutConstraint.activate([
-            dot.widthAnchor.constraint(equalToConstant: 12),
-            dot.heightAnchor.constraint(equalToConstant: 12)
-        ])
-        return stack
+        badgesStack.addArrangedSubview(BadgePillView(kind: .gold,   count: viewModel.goldBadges))
+        badgesStack.addArrangedSubview(BadgePillView(kind: .silver, count: viewModel.silverBadges))
+        badgesStack.addArrangedSubview(BadgePillView(kind: .bronze, count: viewModel.bronzeBadges))
     }
 
     private func loadRemoteAvatar() {
