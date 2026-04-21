@@ -88,6 +88,68 @@ final class UserListViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Cache fallback
+
+    func test_load_onFailureWithCachedUsers_emitsStaleStateWithCachedModels() async {
+        let cache = MockUserCache(stored: [.fixture(userId: 7, displayName: "Cached")])
+        viewModel = UserListViewModel(
+            userService: userService,
+            followRepository: followRepository,
+            userCache: cache
+        )
+        userService.outcome = .failure(.networkUnavailable)
+        let recorder = makeRecorder(expecting: 2)
+
+        viewModel.load()
+        let recorded = await recorder.wait()
+
+        if case .stale(let models, let error) = recorded.last {
+            XCTAssertEqual(models.map(\.userID), [7])
+            XCTAssertEqual(error, .networkUnavailable)
+        } else {
+            XCTFail("Expected stale state with cached models, got \(String(describing: recorded.last))")
+        }
+    }
+
+    func test_load_onSuccess_writesUsersToCache() async {
+        let cache = MockUserCache()
+        viewModel = UserListViewModel(
+            userService: userService,
+            followRepository: followRepository,
+            userCache: cache
+        )
+        userService.outcome = .success([.fixture(userId: 1), .fixture(userId: 2)], hasMore: false)
+        let recorder = makeRecorder(expecting: 2)
+
+        viewModel.load()
+        _ = await recorder.wait()
+
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertEqual(cache.saveCallCount, 1)
+        XCTAssertEqual(cache.stored?.map(\.userId), [1, 2])
+    }
+
+    func test_load_onFailureWithoutCachedUsers_emitsFailedState() async {
+        let cache = MockUserCache(stored: nil)
+        viewModel = UserListViewModel(
+            userService: userService,
+            followRepository: followRepository,
+            userCache: cache
+        )
+        userService.outcome = .failure(.serverError(503))
+        let recorder = makeRecorder(expecting: 2)
+
+        viewModel.load()
+        let recorded = await recorder.wait()
+
+        if case .failed(let error, let stale) = recorded.last {
+            XCTAssertEqual(error, .serverError(503))
+            XCTAssertTrue(stale.isEmpty)
+        } else {
+            XCTFail("Expected failed state")
+        }
+    }
+
     // MARK: - Stale preservation
 
     func test_load_afterSuccess_failureKeepsStaleModels() async {

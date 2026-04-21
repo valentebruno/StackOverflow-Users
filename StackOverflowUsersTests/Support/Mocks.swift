@@ -57,6 +57,31 @@ final class MockFollowRepository: FollowRepositoryProtocol, @unchecked Sendable 
     }
 }
 
+// MARK: - MockUserCache
+
+final class MockUserCache: UserCacheProtocol, @unchecked Sendable {
+
+    var stored: [User]?
+    private(set) var saveCallCount = 0
+    private(set) var clearCallCount = 0
+
+    init(stored: [User]? = nil) {
+        self.stored = stored
+    }
+
+    func load() async -> [User]? { stored }
+
+    func save(_ users: [User]) async {
+        saveCallCount += 1
+        stored = users
+    }
+
+    func clear() async {
+        clearCallCount += 1
+        stored = nil
+    }
+}
+
 // MARK: - User builder
 
 extension User {
