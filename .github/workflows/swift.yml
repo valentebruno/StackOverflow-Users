@@ -2,18 +2,19 @@ name: iOS CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main, feature, bugfix ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ios-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build-and-test:
-    name: Build & Test
-    runs-on: macos-15
+    name: "Build and Test"
+    runs-on: macos-latest
 
     env:
       XCODE_SCHEME: StackOverflowUsers
@@ -28,11 +29,10 @@ jobs:
         run: |
           xcodebuild -version
           swift --version
-          xcrun simctl list devicetypes | grep -E "iPhone 1[5-9]" || true
+          xcrun simctl list runtimes
 
-      - name: Resolve scheme and destination
-        run: |
-          xcodebuild -project "$XCODE_PROJECT" -list
+      - name: List project targets
+        run: xcodebuild -project "$XCODE_PROJECT" -list
 
       - name: Build
         run: |
@@ -58,6 +58,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: TestResults.xcresult
+          name: TestResults-xcresult
           path: TestResults.xcresult
           if-no-files-found: ignore
