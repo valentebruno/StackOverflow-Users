@@ -66,6 +66,8 @@ final class UserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
+        isAccessibilityElement = true
+        accessibilityTraits = .button
         setupLayout()
         followButton.addTarget(self, action: #selector(followButtonTapped), for: .touchUpInside)
     }
@@ -98,6 +100,7 @@ final class UserCell: UITableViewCell {
         reputationLabel.text = model.formattedReputation
         followedIndicator.isHidden = !model.isFollowed
         updateFollowButton(isFollowed: model.isFollowed, name: model.displayName)
+        updateAccessibility(model: model)
 
         let placeholder = InitialsImageGenerator.image(for: model.displayName)
         avatarImageView.image = placeholder
@@ -111,9 +114,25 @@ final class UserCell: UITableViewCell {
         }
     }
 
+    // MARK: - Accessibility
+
+    private func updateAccessibility(model: UserCellModel) {
+        let followState = model.isFollowed ? "Followed" : "Not followed"
+        accessibilityLabel = "\(model.displayName), \(model.formattedReputation), \(followState)"
+
+        let actionTitle = model.isFollowed ? "Unfollow" : "Follow"
+        accessibilityCustomActions = [
+            UIAccessibilityCustomAction(name: actionTitle) { [weak self] _ in
+                self?.onFollowTapped?()
+                return true
+            }
+        ]
+    }
+
     // MARK: - Actions
 
     @objc private func followButtonTapped() {
+        UISelectionFeedbackGenerator().selectionChanged()
         onFollowTapped?()
     }
 
