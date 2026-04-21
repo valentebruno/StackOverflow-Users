@@ -14,13 +14,27 @@ final class UserService: UserServiceProtocol {
     private let decoder: JSONDecoder
     private let baseURL: URL
 
+    private let apiKey: String?
+
     init(
         session: URLSession = UserService.defaultSession(),
-        baseURL: URL = URL(string: "https://api.stackexchange.com/2.2")!
+        baseURL: URL = URL(string: "https://api.stackexchange.com/2.2")!,
+        apiKey: String? = UserService.configuredAPIKey()
     ) {
         self.session = session
         self.decoder = JSONDecoder()
         self.baseURL = baseURL
+        self.apiKey = apiKey
+    }
+
+    // MARK: - API key
+
+    private static func configuredAPIKey() -> String? {
+        guard let raw = Bundle.main.object(forInfoDictionaryKey: "StackExchangeAPIKey") as? String else {
+            return nil
+        }
+        let trimmed = raw.trimmingCharacters(in: .whitespaces)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     // MARK: - Session Factory
@@ -46,13 +60,17 @@ final class UserService: UserServiceProtocol {
             url: baseURL.appendingPathComponent("users"),
             resolvingAgainstBaseURL: false
         )!
-        components.queryItems = [
+        var queryItems: [URLQueryItem] = [
             URLQueryItem(name: "page",     value: String(page)),
             URLQueryItem(name: "pagesize", value: String(pageSize)),
             URLQueryItem(name: "order",    value: "desc"),
             URLQueryItem(name: "sort",     value: "reputation"),
             URLQueryItem(name: "site",     value: "stackoverflow")
         ]
+        if let apiKey {
+            queryItems.append(URLQueryItem(name: "key", value: apiKey))
+        }
+        components.queryItems = queryItems
         return components.url!
     }
 
