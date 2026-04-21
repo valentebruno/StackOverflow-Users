@@ -13,10 +13,21 @@ final class AppCoordinator: Coordinator {
     }
 
     func start() {
-        let userService      = UserService()
-        let followRepository = UserDefaultsFollowRepository()
-        let userCache        = FileUserCache()
-        let imageLoader      = ImageLoader.shared
+        let userService: UserServiceProtocol
+        let followRepository: FollowRepositoryProtocol
+        let userCache: UserCacheProtocol?
+
+        if UITestingHooks.isRunning {
+            userService      = UITestingHooks.makeUserService()
+            followRepository = UITestingHooks.makeFollowRepository()
+            userCache        = UITestingHooks.makeUserCache()
+        } else {
+            userService      = UserService()
+            followRepository = UserDefaultsFollowRepository()
+            userCache        = FileUserCache()
+        }
+
+        let imageLoader = ImageLoader.shared
 
         let viewModel = UserListViewModel(
             userService: userService,

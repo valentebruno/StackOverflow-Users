@@ -51,6 +51,7 @@ final class UserListViewController: UIViewController {
         let control = UISegmentedControl(items: ["All", "Followed"])
         control.selectedSegmentIndex = 0
         control.addTarget(self, action: #selector(filterChanged), for: .valueChanged)
+        control.accessibilityIdentifier = "filter-control"
         return control
     }()
 

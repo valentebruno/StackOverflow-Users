@@ -27,6 +27,7 @@ final class EmptyStateView: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "empty-state-title"
         return label
     }()
 

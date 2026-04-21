@@ -104,6 +104,9 @@ final class UserCell: UITableViewCell {
         followedIndicator.isHidden = !model.isFollowed
         updateFollowButton(isFollowed: model.isFollowed, name: model.displayName)
         updateAccessibility(model: model)
+        accessibilityIdentifier = "user-cell-\(model.userID)"
+        followButton.accessibilityIdentifier = "follow-button-\(model.userID)"
+        followedIndicator.accessibilityIdentifier = "followed-indicator-\(model.userID)"
 
         let placeholder = InitialsImageGenerator.image(for: model.displayName)
         avatarImageView.image = placeholder
