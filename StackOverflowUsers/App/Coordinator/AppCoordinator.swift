@@ -38,11 +38,26 @@ final class AppCoordinator: Coordinator {
             viewModel: viewModel,
             imageLoader: imageLoader
         )
+        viewController.onSelectUser = { [weak self] user in
+            self?.showDetail(for: user, imageLoader: imageLoader)
+        }
 
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.setViewControllers([viewController], animated: false)
 
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
+    }
+
+    // MARK: - Navigation
+
+    private func showDetail(for user: User, imageLoader: ImageLoading) {
+        let detailVM = UserDetailViewModel(user: user)
+        let detailVC = UserDetailViewController(
+            viewModel: detailVM,
+            imageLoader: imageLoader,
+            urlOpener: { url in UIApplication.shared.open(url) }
+        )
+        navigationController.pushViewController(detailVC, animated: true)
     }
 }

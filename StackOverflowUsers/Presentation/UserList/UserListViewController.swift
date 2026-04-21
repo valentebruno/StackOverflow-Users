@@ -13,6 +13,7 @@ final class UserListViewController: UIViewController {
 
     private let viewModel: UserListViewModel
     private let imageLoader: ImageLoading
+    var onSelectUser: ((User) -> Void)?
 
     // MARK: - Subviews
 
@@ -314,6 +315,14 @@ final class UserListViewController: UIViewController {
 // MARK: - UITableViewDelegate
 
 extension UserListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let userID = dataSource.itemIdentifier(for: indexPath),
+              let user = viewModel.user(withID: userID)
+        else { return }
+        onSelectUser?(user)
+    }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let threshold: CGFloat = 240

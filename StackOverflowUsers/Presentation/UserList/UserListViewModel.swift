@@ -141,6 +141,10 @@ final class UserListViewModel {
         }
     }
 
+    func user(withID userID: Int) -> User? {
+        users.first { $0.userId == userID }
+    }
+
     func setFilter(_ newFilter: Filter) {
         guard newFilter != filter else { return }
         filter = newFilter
