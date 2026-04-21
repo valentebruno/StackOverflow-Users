@@ -12,16 +12,40 @@ final class UserService: UserServiceProtocol {
 
     private let session: URLSession
     private let decoder: JSONDecoder
+    private let baseURL: URL
 
-    init(session: URLSession = .shared) {
+    init(
+        session: URLSession = UserService.defaultSession(),
+        baseURL: URL = URL(string: "https://api.stackexchange.com/2.2")!
+    ) {
         self.session = session
         self.decoder = JSONDecoder()
+        self.baseURL = baseURL
+    }
+
+    // MARK: - Session Factory
+
+    static func defaultSession() -> URLSession {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 15
+        config.timeoutIntervalForResource = 30
+        config.waitsForConnectivity = false
+        config.httpAdditionalHeaders = ["Accept": "application/json"]
+        config.requestCachePolicy = .useProtocolCachePolicy
+        config.urlCache = URLCache(
+            memoryCapacity: 4 * 1024 * 1024,
+            diskCapacity:   20 * 1024 * 1024
+        )
+        return URLSession(configuration: config)
     }
 
     // MARK: - Endpoint
 
     private var topUsersURL: URL {
-        var components = URLComponents(string: "https://api.stackexchange.com/2.2/users")!
+        var components = URLComponents(
+            url: baseURL.appendingPathComponent("users"),
+            resolvingAgainstBaseURL: false
+        )!
         components.queryItems = [
             URLQueryItem(name: "page",     value: "1"),
             URLQueryItem(name: "pagesize", value: "20"),
@@ -59,8 +83,8 @@ final class UserService: UserServiceProtocol {
 
         if wrapper.isAPIError {
             throw AppError.apiError(
-                id: wrapper.errorId ?? 0,
-                name: wrapper.errorName ?? "unknown_error",
+                id:      wrapper.errorId ?? 0,
+                name:    wrapper.errorName ?? "unknown_error",
                 message: wrapper.errorMessage ?? "An unknown API error occurred."
             )
         }
@@ -96,7 +120,10 @@ final class UserService: UserServiceProtocol {
              .timedOut,
              .dnsLookupFailed,
              .dataNotAllowed,
-             .internationalRoamingOff:
+             .internationalRoamingOff,
+             .callIsActive:
+            return .networkUnavailable
+        case .cancelled:
             return .networkUnavailable
         default:
             return .networkUnavailable
