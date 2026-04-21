@@ -41,25 +41,37 @@ final class UserListViewModel {
     private let userService: UserServiceProtocol
     private let followRepository: FollowRepositoryProtocol
 
+    // MARK: - Pagination
+
+    private let pageSize: Int
     private var users: [User] = []
+    private var currentPage: Int = 0
+    private var hasMorePages: Bool = false
+    private var isFetchingNextPage: Bool = false
     private var loadTask: Task<Void, Never>?
+    private var nextPageTask: Task<Void, Never>?
 
     init(
         userService: UserServiceProtocol,
-        followRepository: FollowRepositoryProtocol
+        followRepository: FollowRepositoryProtocol,
+        pageSize: Int = 20
     ) {
         self.userService = userService
         self.followRepository = followRepository
+        self.pageSize = pageSize
     }
 
     deinit {
         loadTask?.cancel()
+        nextPageTask?.cancel()
     }
 
     // MARK: - Intents
 
     func load() {
         loadTask?.cancel()
+        nextPageTask?.cancel()
+        isFetchingNextPage = false
 
         let staleCellModels = currentCellModels()
         state = .loading
@@ -67,10 +79,12 @@ final class UserListViewModel {
         loadTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let page = try await self.userService.fetchTopUsers(page: 1, pageSize: 20)
+                let page = try await self.userService.fetchTopUsers(page: 1, pageSize: self.pageSize)
                 guard !Task.isCancelled else { return }
                 let followed = await self.followRepository.followedUserIDs()
                 self.users = page.users
+                self.currentPage = 1
+                self.hasMorePages = page.hasMore
                 self.emitDataState(followedIDs: followed)
             } catch let error as AppError {
                 guard !Task.isCancelled else { return }
@@ -86,6 +100,31 @@ final class UserListViewModel {
 
     func retry() {
         load()
+    }
+
+    func loadNextPage() {
+        guard hasMorePages, !isFetchingNextPage else { return }
+        guard filter == .all else { return }
+        guard case .loaded = state else { return }
+
+        isFetchingNextPage = true
+        let nextPage = currentPage + 1
+
+        nextPageTask = Task { [weak self] in
+            guard let self else { return }
+            defer { self.isFetchingNextPage = false }
+            do {
+                let page = try await self.userService.fetchTopUsers(page: nextPage, pageSize: self.pageSize)
+                guard !Task.isCancelled else { return }
+                let followed = await self.followRepository.followedUserIDs()
+                self.users.append(contentsOf: page.users)
+                self.currentPage = nextPage
+                self.hasMorePages = page.hasMore
+                self.emitDataState(followedIDs: followed)
+            } catch {
+                return
+            }
+        }
     }
 
     func toggleFollow(userID: Int) {
@@ -122,8 +161,8 @@ final class UserListViewModel {
 
     private func currentCellModels() -> [UserCellModel] {
         switch state {
-        case .loaded(let models):   return models
-        case .failed(_, let stale): return stale
+        case .loaded(let models):     return models
+        case .failed(_, let stale):   return stale
         case .idle, .loading, .empty: return []
         }
     }
