@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		002043C09C27FFF5197B29BD /* UserListStateCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F202BAFCEA94217D3821D31A /* UserListStateCopy.swift */; };
 		036A7A26011696256B3C4BAB /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214EC24B8EDFC1E54E4D39FA /* UserCell.swift */; };
 		0AB40F93DDC2C2E07067152A /* UserDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D712C3CE5320DE785E61EF /* UserDetailViewModelTests.swift */; };
 		0B14CFF8A2D94DF07CDA9D7F /* AppErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E985991A94298E278E1C2844 /* AppErrorTests.swift */; };
@@ -26,6 +27,7 @@
 		67FBB2087A48F60A885C694F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84098B4EBEDB4140F30EB0C4 /* Assets.xcassets */; };
 		69DEF7E44E8A6BA135C4218F /* UserCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF900077347359BD2D020EF5 /* UserCache.swift */; };
 		78185A73440F3E3AA7C937FF /* StackExchangeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5791C4F7C824CF0506F88827 /* StackExchangeResponse.swift */; };
+		7D78F20746F0332FE3358B23 /* FilterHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAEA89BD52894242FF25380 /* FilterHeaderView.swift */; };
 		7F53286CEC9717117BAB2AAE /* UserCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA5CCD5349C54F99FCF5108 /* UserCellModel.swift */; };
 		8933CFA1A1A09646CEB119F7 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064987EF8829131DC1F4E39D /* EmptyStateView.swift */; };
 		962A9E1EE7451B434D785533 /* FileUserCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596830B156A6954509F30542 /* FileUserCacheTests.swift */; };
@@ -107,6 +109,8 @@
 		E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
 		E985991A94298E278E1C2844 /* AppErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppErrorTests.swift; sourceTree = "<group>"; };
 		EB4D143964C7757C5DAEF56A /* Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
+		EBAEA89BD52894242FF25380 /* FilterHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterHeaderView.swift; sourceTree = "<group>"; };
+		F202BAFCEA94217D3821D31A /* UserListStateCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListStateCopy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -280,8 +284,10 @@
 		D2A5248292CFC5D248F0B15F /* UserList */ = {
 			isa = PBXGroup;
 			children = (
+				EBAEA89BD52894242FF25380 /* FilterHeaderView.swift */,
 				214EC24B8EDFC1E54E4D39FA /* UserCell.swift */,
 				3AA5CCD5349C54F99FCF5108 /* UserCellModel.swift */,
+				F202BAFCEA94217D3821D31A /* UserListStateCopy.swift */,
 				B4FDAAB5FB7874E92A5F3D95 /* UserListViewController.swift */,
 				E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */,
 			);
@@ -464,6 +470,7 @@
 				D8BB61E1A70CE8ADFAB79656 /* BadgePillView.swift in Sources */,
 				4E1CF1DF39ECFF9F92B4DD36 /* Coordinator.swift in Sources */,
 				8933CFA1A1A09646CEB119F7 /* EmptyStateView.swift in Sources */,
+				7D78F20746F0332FE3358B23 /* FilterHeaderView.swift in Sources */,
 				601BBE0EFC873B22983D72EB /* FollowRepository.swift in Sources */,
 				56BF7D2506ABB1B429DB8A72 /* ImageLoader.swift in Sources */,
 				DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */,
@@ -477,6 +484,7 @@
 				7F53286CEC9717117BAB2AAE /* UserCellModel.swift in Sources */,
 				C0296036D365B38F16B40AAD /* UserDetailViewController.swift in Sources */,
 				FE140714BB957F6DFD3D1A46 /* UserDetailViewModel.swift in Sources */,
+				002043C09C27FFF5197B29BD /* UserListStateCopy.swift in Sources */,
 				562E69F712816A1662562C32 /* UserListViewController.swift in Sources */,
 				BA1498BD161A0227FF61E8BF /* UserListViewModel.swift in Sources */,
 				C01455A7BDE0DF10F47800E7 /* UserPage.swift in Sources */,
