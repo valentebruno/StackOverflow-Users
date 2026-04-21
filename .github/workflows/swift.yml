@@ -1,0 +1,52 @@
+# .github/workflows/swift.yml
+name: iOS CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: macos-15        # Xcode 16.x ships on macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Pin a specific Xcode version to keep builds reproducible
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
+      - name: Show build environment
+        run: |
+          xcodebuild -version
+          xcrun simctl list devicetypes | grep -i "iPhone 16"
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project StackOverflowUsers.xcodeproj \
+            -scheme StackOverflowUsers \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color
+
+      - name: Run Unit Tests
+        run: |
+          xcodebuild test \
+            -project StackOverflowUsers.xcodeproj \
+            -scheme StackOverflowUsers \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -enableCodeCoverage YES \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty --color --report junit --output test-results.xml
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()           # upload even on test failure
+        with:
+          name: test-results
+          path: test-results.xml
