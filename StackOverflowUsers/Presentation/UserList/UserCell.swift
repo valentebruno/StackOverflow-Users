@@ -115,12 +115,18 @@ final class UserCell: UITableViewCell {
 
         guard let url = model.profileImageURL else { return }
 
-        imageLoadTask = Task { @MainActor [weak self] in
+        imageLoadTask = Task { @MainActor [weak self, backoff = Self.scrollBackoffNanoseconds] in
+            // Brief backoff so fast scrolling (which cancels + re-requests the same cell
+            // many times per second) doesn't spray the network with never-rendered fetches.
+            try? await Task.sleep(nanoseconds: backoff)
+            guard !Task.isCancelled else { return }
             let loaded = await imageLoader.image(for: url)
             guard !Task.isCancelled, let self else { return }
             self.avatarImageView.image = loaded ?? placeholder
         }
     }
+
+    private static let scrollBackoffNanoseconds: UInt64 = 150_000_000
 
     // MARK: - Accessibility
 
