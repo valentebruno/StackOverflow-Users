@@ -127,6 +127,60 @@ final class UserListViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Pagination
+
+    func test_loadNextPage_appendsUsersAndStopsWhenHasMoreIsFalse() async {
+        userService.pageOutcomes = [
+            1: .success([.fixture(userId: 1), .fixture(userId: 2)], hasMore: true),
+            2: .success([.fixture(userId: 3), .fixture(userId: 4)], hasMore: false)
+        ]
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let next = makeRecorder(expecting: 1)
+        viewModel.loadNextPage()
+        let recorded = await next.wait()
+
+        if case .loaded(let models) = recorded.last {
+            XCTAssertEqual(models.map(\.userID), [1, 2, 3, 4])
+        } else {
+            XCTFail("Expected loaded with appended page")
+        }
+        XCTAssertEqual(userService.fetchCallCount, 2)
+        XCTAssertEqual(userService.lastPageRequested, 2)
+    }
+
+    func test_loadNextPage_whenHasMoreIsFalse_isANoOp() async {
+        userService.outcome = .success([.fixture(userId: 1)], hasMore: false)
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let callsBefore = userService.fetchCallCount
+        viewModel.loadNextPage()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertEqual(userService.fetchCallCount, callsBefore)
+    }
+
+    func test_loadNextPage_whileFiltered_isANoOp() async {
+        userService.pageOutcomes = [
+            1: .success([.fixture(userId: 1)], hasMore: true)
+        ]
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let filtered = makeRecorder(expecting: 1)
+        viewModel.setFilter(.followed)
+        _ = await filtered.wait()
+
+        let callsBefore = userService.fetchCallCount
+        viewModel.loadNextPage()
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertEqual(userService.fetchCallCount, callsBefore)
+    }
+
     // MARK: - Filter
 
     func test_setFilter_toFollowedWithNoFollows_emitsEmptyState() async {
