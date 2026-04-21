@@ -1,5 +1,7 @@
 import UIKit
 
+// MARK: - AppCoordinator
+
 @MainActor
 final class AppCoordinator: Coordinator {
 
@@ -11,11 +13,22 @@ final class AppCoordinator: Coordinator {
     }
 
     func start() {
-        let rootViewController = UIViewController()
-        rootViewController.view.backgroundColor = .systemBackground
-        rootViewController.title = "StackOverflow Users"
+        let userService      = UserService()
+        let followRepository = UserDefaultsFollowRepository()
+        let imageLoader      = ImageLoader.shared
 
-        navigationController.setViewControllers([rootViewController], animated: false)
+        let viewModel = UserListViewModel(
+            userService: userService,
+            followRepository: followRepository
+        )
+        let viewController = UserListViewController(
+            viewModel: viewModel,
+            imageLoader: imageLoader
+        )
+
+        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.setViewControllers([viewController], animated: false)
+
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
     }
