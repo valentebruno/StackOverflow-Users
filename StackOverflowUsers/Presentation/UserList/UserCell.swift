@@ -54,11 +54,13 @@ final class UserCell: UITableViewCell {
     }()
 
     private let followedIndicator: UIImageView = {
-        let iv = UIImageView(image: UIImage(systemName: "checkmark.seal.fill"))
+        let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+        let iv = UIImageView(image: UIImage(systemName: "checkmark.seal.fill", withConfiguration: config))
         iv.tintColor = .systemBlue
         iv.isHidden = true
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.setContentHuggingPriority(.required, for: .horizontal)
+        iv.isAccessibilityElement = false
         return iv
     }()
 
@@ -140,9 +142,14 @@ final class UserCell: UITableViewCell {
     // MARK: - Layout
 
     private func updateFollowButton(isFollowed: Bool, name: String) {
-        var config = followButton.configuration ?? .bordered()
+        var config: UIButton.Configuration = isFollowed ? .tinted() : .bordered()
+        config.cornerStyle = .capsule
+        config.buttonSize = .small
         config.title = isFollowed ? "Unfollow" : "Follow"
-        config.baseForegroundColor = isFollowed ? .systemGray : .systemBlue
+        config.image = UIImage(systemName: isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
+        config.imagePadding = 4
+        config.baseForegroundColor = isFollowed ? .systemRed : .systemBlue
+        config.baseBackgroundColor = isFollowed ? .systemRed.withAlphaComponent(0.12) : .clear
         followButton.configuration = config
         followButton.accessibilityLabel = isFollowed ? "Unfollow \(name)" : "Follow \(name)"
     }
@@ -176,8 +183,8 @@ final class UserCell: UITableViewCell {
             trailingStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             trailingStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
 
-            followedIndicator.widthAnchor.constraint(equalToConstant: 18),
-            followedIndicator.heightAnchor.constraint(equalToConstant: 18),
+            followedIndicator.widthAnchor.constraint(equalToConstant: 22),
+            followedIndicator.heightAnchor.constraint(equalToConstant: 22),
 
             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
         ])
