@@ -3,7 +3,7 @@ import Foundation
 // MARK: - UserServiceProtocol
 
 protocol UserServiceProtocol: Sendable {
-    func fetchTopUsers() async throws -> [User]
+    func fetchTopUsers(page: Int, pageSize: Int) async throws -> UserPage
 }
 
 // MARK: - UserService
@@ -41,14 +41,14 @@ final class UserService: UserServiceProtocol {
 
     // MARK: - Endpoint
 
-    private var topUsersURL: URL {
+    private func topUsersURL(page: Int, pageSize: Int) -> URL {
         var components = URLComponents(
             url: baseURL.appendingPathComponent("users"),
             resolvingAgainstBaseURL: false
         )!
         components.queryItems = [
-            URLQueryItem(name: "page",     value: "1"),
-            URLQueryItem(name: "pagesize", value: "20"),
+            URLQueryItem(name: "page",     value: String(page)),
+            URLQueryItem(name: "pagesize", value: String(pageSize)),
             URLQueryItem(name: "order",    value: "desc"),
             URLQueryItem(name: "sort",     value: "reputation"),
             URLQueryItem(name: "site",     value: "stackoverflow")
@@ -58,11 +58,11 @@ final class UserService: UserServiceProtocol {
 
     // MARK: - Fetch
 
-    func fetchTopUsers() async throws -> [User] {
+    func fetchTopUsers(page: Int, pageSize: Int) async throws -> UserPage {
         let data: Data
         let response: URLResponse
         do {
-            (data, response) = try await session.data(from: topUsersURL)
+            (data, response) = try await session.data(from: topUsersURL(page: page, pageSize: pageSize))
         } catch let urlError as URLError {
             throw Self.mapURLError(urlError)
         } catch {
@@ -89,11 +89,15 @@ final class UserService: UserServiceProtocol {
             )
         }
 
-        guard let users = wrapper.items, !users.isEmpty else {
+        let users = wrapper.items ?? []
+        if page == 1 && users.isEmpty {
             throw AppError.noResults
         }
 
-        return users.map(Self.sanitize)
+        return UserPage(
+            users:   users.map(Self.sanitize),
+            hasMore: wrapper.hasMore ?? false
+        )
     }
 
     // MARK: - Mapping

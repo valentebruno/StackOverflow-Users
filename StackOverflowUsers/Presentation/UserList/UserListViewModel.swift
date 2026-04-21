@@ -67,10 +67,10 @@ final class UserListViewModel {
         loadTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let fetched = try await self.userService.fetchTopUsers()
+                let page = try await self.userService.fetchTopUsers(page: 1, pageSize: 20)
                 guard !Task.isCancelled else { return }
                 let followed = await self.followRepository.followedUserIDs()
-                self.users = fetched
+                self.users = page.users
                 self.emitDataState(followedIDs: followed)
             } catch let error as AppError {
                 guard !Task.isCancelled else { return }

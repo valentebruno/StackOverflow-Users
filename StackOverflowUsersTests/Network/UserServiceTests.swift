@@ -27,7 +27,7 @@ final class UserServiceTests: XCTestCase {
             return (Fixtures.httpResponse(), Fixtures.data(Fixtures.successUsers))
         }
 
-        _ = try await service.fetchTopUsers()
+        _ = try await service.fetchTopUsers(page: 1, pageSize: 20)
 
         let request = try XCTUnwrap(captured.value)
         let url = try XCTUnwrap(request.url)
@@ -52,12 +52,29 @@ final class UserServiceTests: XCTestCase {
             (Fixtures.httpResponse(), Fixtures.data(Fixtures.successUsers))
         }
 
-        let users = try await service.fetchTopUsers()
+        let page = try await service.fetchTopUsers(page: 1, pageSize: 20)
 
-        XCTAssertEqual(users.count, 2)
-        XCTAssertEqual(users[0].displayName, "Jon Skeet")
-        XCTAssertEqual(users[1].displayName, "Salvadór")
-        XCTAssertEqual(users[1].location, "Curaçao")
+        XCTAssertEqual(page.users.count, 2)
+        XCTAssertEqual(page.users[0].displayName, "Jon Skeet")
+        XCTAssertEqual(page.users[1].displayName, "Salvadór")
+        XCTAssertEqual(page.users[1].location, "Curaçao")
+        XCTAssertFalse(page.hasMore)
+    }
+
+    func test_fetchTopUsers_passesPageAndPageSizeToQueryItems() async throws {
+        let captured = CapturedRequest()
+        MockURLProtocol.requestHandler = { request in
+            captured.store(request)
+            return (Fixtures.httpResponse(), Fixtures.data(Fixtures.successUsers))
+        }
+
+        _ = try await service.fetchTopUsers(page: 3, pageSize: 50)
+
+        let url = try XCTUnwrap(captured.value?.url)
+        let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        let items = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).map { ($0.name, $0.value) })
+        XCTAssertEqual(items["page"], "3")
+        XCTAssertEqual(items["pagesize"], "50")
     }
 
     // MARK: - Errors
@@ -76,7 +93,7 @@ final class UserServiceTests: XCTestCase {
         }
 
         do {
-            _ = try await service.fetchTopUsers()
+            _ = try await service.fetchTopUsers(page: 1, pageSize: 20)
             XCTFail("Expected apiError to throw")
         } catch let AppError.apiError(id, name, _) {
             XCTAssertEqual(id, 502)
@@ -131,7 +148,7 @@ final class UserServiceTests: XCTestCase {
 
     private func assertThrows(_ expected: AppError, file: StaticString = #filePath, line: UInt = #line) async {
         do {
-            _ = try await service.fetchTopUsers()
+            _ = try await service.fetchTopUsers(page: 1, pageSize: 20)
             XCTFail("Expected to throw \(expected)", file: file, line: line)
         } catch let error as AppError {
             XCTAssertEqual(error, expected, file: file, line: line)

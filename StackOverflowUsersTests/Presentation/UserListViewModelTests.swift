@@ -30,7 +30,7 @@ final class UserListViewModelTests: XCTestCase {
     // MARK: - Load
 
     func test_load_onSuccess_emitsLoadingThenLoaded() async {
-        userService.outcome = .success([.fixture(userId: 1, displayName: "Ann")])
+        userService.outcome = .success([.fixture(userId: 1, displayName: "Ann")], hasMore: false)
         let recorder = makeRecorder(expecting: 2)
 
         viewModel.load()
