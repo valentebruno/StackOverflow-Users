@@ -12,6 +12,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  smoke:
+    name: Smoke
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "ubuntu runner is alive"
+
   test:
     name: Build and Test
     runs-on: macos-14
