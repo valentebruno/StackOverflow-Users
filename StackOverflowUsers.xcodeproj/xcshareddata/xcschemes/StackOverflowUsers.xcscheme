@@ -50,6 +50,17 @@
                ReferencedContainer = "container:StackOverflowUsers.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "317B3A98717586CFB0181D2D"
+               BuildableName = "StackOverflowUsersUITests.xctest"
+               BlueprintName = "StackOverflowUsersUITests"
+               ReferencedContainer = "container:StackOverflowUsers.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

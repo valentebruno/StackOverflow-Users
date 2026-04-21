@@ -60,7 +60,8 @@ final class UserCell: UITableViewCell {
         iv.isHidden = true
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.setContentHuggingPriority(.required, for: .horizontal)
-        iv.isAccessibilityElement = false
+        iv.isAccessibilityElement = true
+        iv.accessibilityLabel = "Following"
         return iv
     }()
 
@@ -69,8 +70,6 @@ final class UserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
-        isAccessibilityElement = true
-        accessibilityTraits = .button
         setupLayout()
         followButton.addTarget(self, action: #selector(followButtonTapped), for: .touchUpInside)
     }
@@ -107,6 +106,9 @@ final class UserCell: UITableViewCell {
         accessibilityIdentifier = "user-cell-\(model.userID)"
         followButton.accessibilityIdentifier = "follow-button-\(model.userID)"
         followedIndicator.accessibilityIdentifier = "followed-indicator-\(model.userID)"
+        followedIndicator.isAccessibilityElement = model.isFollowed
+        followedIndicator.accessibilityLabel = "Following"
+        followedIndicator.accessibilityTraits = .image
 
         let placeholder = InitialsImageGenerator.image(for: model.displayName)
         avatarImageView.image = placeholder

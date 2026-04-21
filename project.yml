@@ -35,6 +35,18 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/StackOverflowUsers.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StackOverflowUsers"
         BUNDLE_LOADER: "$(TEST_HOST)"
+  StackOverflowUsersUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: StackOverflowUsersUITests
+    dependencies:
+      - target: StackOverflowUsers
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.brunovalente.StackOverflowUsersUITests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: StackOverflowUsers
 schemes:
   StackOverflowUsers:
     build:
@@ -43,4 +55,5 @@ schemes:
     test:
       targets:
         - StackOverflowUsersTests
+        - StackOverflowUsersUITests
       gatherCoverageData: false
