@@ -11,6 +11,7 @@ final class UserCell: UITableViewCell {
 
     private var imageLoadTask: Task<Void, Never>?
     private var onFollowTapped: (() -> Void)?
+    private var lastConfiguredModel: UserCellModel?
 
     // MARK: - Subviews
 
@@ -87,6 +88,7 @@ final class UserCell: UITableViewCell {
         reputationLabel.text = nil
         followedIndicator.isHidden = true
         onFollowTapped = nil
+        lastConfiguredModel = nil
     }
 
     // MARK: - Configure
@@ -96,6 +98,7 @@ final class UserCell: UITableViewCell {
         imageLoader: ImageLoading,
         onFollowTapped: @escaping () -> Void
     ) {
+        let previousModel = lastConfiguredModel
         self.onFollowTapped = onFollowTapped
 
         nameLabel.text = model.displayName
@@ -103,6 +106,8 @@ final class UserCell: UITableViewCell {
         followedIndicator.isHidden = !model.isFollowed
         updateFollowButton(isFollowed: model.isFollowed, name: model.displayName)
         updateAccessibility(model: model)
+        announceFollowChangeIfNeeded(previous: previousModel, current: model)
+        lastConfiguredModel = model
         accessibilityIdentifier = "user-cell-\(model.userID)"
         followButton.accessibilityIdentifier = "follow-button-\(model.userID)"
         followedIndicator.accessibilityIdentifier = "followed-indicator-\(model.userID)"
@@ -129,6 +134,22 @@ final class UserCell: UITableViewCell {
     private static let scrollBackoffNanoseconds: UInt64 = 150_000_000
 
     // MARK: - Accessibility
+
+    private func announceFollowChangeIfNeeded(
+        previous: UserCellModel?,
+        current: UserCellModel
+    ) {
+        guard let previous,
+              previous.userID == current.userID,
+              previous.isFollowed != current.isFollowed,
+              UIAccessibility.isVoiceOverRunning
+        else { return }
+
+        let message = current.isFollowed
+            ? "Now following \(current.displayName)"
+            : "Unfollowed \(current.displayName)"
+        UIAccessibility.post(notification: .announcement, argument: message)
+    }
 
     private func updateAccessibility(model: UserCellModel) {
         let followState = model.isFollowed ? "Followed" : "Not followed"
