@@ -232,11 +232,12 @@ extension UserListViewController: UITableViewDelegate {
         else { return nil }
 
         let title = model.isFollowed ? "Unfollow" : "Follow"
-        let action = UIContextualAction(style: .normal, title: title) { [weak self] _, _, done in
+        let style: UIContextualAction.Style = model.isFollowed ? .destructive : .normal
+        let action = UIContextualAction(style: style, title: title) { [weak self] _, _, done in
             self?.viewModel.toggleFollow(userID: userID)
             done(true)
         }
-        action.backgroundColor = model.isFollowed ? .systemGray : .systemBlue
+        action.backgroundColor = model.isFollowed ? .systemRed : .systemBlue
         action.image = UIImage(systemName: model.isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
         return UISwipeActionsConfiguration(actions: [action])
     }
