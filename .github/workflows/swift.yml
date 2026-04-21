@@ -1,4 +1,3 @@
-# .github/workflows/swift.yml
 name: iOS CI
 
 on:
@@ -7,46 +6,58 @@ on:
   pull_request:
     branches: [ "main" ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-test:
     name: Build & Test
-    runs-on: macos-15        # Xcode 16.x ships on macos-15
+    runs-on: macos-15
+
+    env:
+      XCODE_SCHEME: StackOverflowUsers
+      XCODE_PROJECT: StackOverflowUsers.xcodeproj
+      SIMULATOR: "platform=iOS Simulator,name=iPhone 16,OS=latest"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Pin a specific Xcode version to keep builds reproducible
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app
-
       - name: Show build environment
         run: |
           xcodebuild -version
-          xcrun simctl list devicetypes | grep -i "iPhone 16"
+          swift --version
+          xcrun simctl list devicetypes | grep -E "iPhone 1[5-9]" || true
+
+      - name: Resolve scheme and destination
+        run: |
+          xcodebuild -project "$XCODE_PROJECT" -list
 
       - name: Build
         run: |
+          set -o pipefail
           xcodebuild build \
-            -project StackOverflowUsers.xcodeproj \
-            -scheme StackOverflowUsers \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty --color
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -destination "$SIMULATOR" \
+            CODE_SIGNING_ALLOWED=NO
 
-      - name: Run Unit Tests
+      - name: Run unit tests
         run: |
+          set -o pipefail
           xcodebuild test \
-            -project StackOverflowUsers.xcodeproj \
-            -scheme StackOverflowUsers \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -destination "$SIMULATOR" \
             -enableCodeCoverage YES \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty --color --report junit --output test-results.xml
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO
 
-      - name: Upload Test Results
+      - name: Upload xcresult bundle
+        if: always()
         uses: actions/upload-artifact@v4
-        if: always()           # upload even on test failure
         with:
-          name: test-results
-          path: test-results.xml
+          name: TestResults.xcresult
+          path: TestResults.xcresult
+          if-no-files-found: ignore
