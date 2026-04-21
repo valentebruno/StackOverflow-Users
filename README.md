@@ -79,6 +79,8 @@ Some users' `profile_image` URLs still point to Gravatar over plain `http://`. A
 
 ## Tests
 
+All tests run locally — there is no CI workflow on this repo (GitHub Actions on private accounts charge a 10x minute multiplier for macOS runners, and I'd rather not ship a red badge than wire in paid minutes for a take-home).
+
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
   -scheme StackOverflowUsers \
