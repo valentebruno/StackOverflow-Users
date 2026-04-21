@@ -46,8 +46,9 @@ final class UserListViewController: UIViewController {
         return control
     }()
 
-    // MARK: - Data Source
+    // MARK: - State
 
+    private var itemModels: [Int: UserCellModel] = [:]
     private lazy var dataSource = makeDataSource()
 
     // MARK: - Init
@@ -66,7 +67,7 @@ final class UserListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "StackOverflow Users"
+        title = "Stack Overflow Users"
         view.backgroundColor = .systemBackground
         setupViews()
         bindViewModel()
@@ -81,6 +82,7 @@ final class UserListViewController: UIViewController {
         view.addSubview(loadingIndicator)
 
         tableView.dataSource = dataSource
+        tableView.delegate = self
         tableView.refreshControl = refreshControl
 
         NSLayoutConstraint.activate([
@@ -171,9 +173,10 @@ final class UserListViewController: UIViewController {
 
     // MARK: - Diffable Data Source
 
-    private func makeDataSource() -> UITableViewDiffableDataSource<Section, UserCellModel> {
-        UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, model in
+    private func makeDataSource() -> UITableViewDiffableDataSource<Section, Int> {
+        UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, userID in
             guard let self,
+                  let model = self.itemModels[userID],
                   let cell = tableView.dequeueReusableCell(
                     withIdentifier: UserCell.reuseIdentifier,
                     for: indexPath
@@ -184,7 +187,7 @@ final class UserListViewController: UIViewController {
                 with: model,
                 imageLoader: self.imageLoader,
                 onFollowTapped: { [weak self] in
-                    self?.viewModel.toggleFollow(userID: model.userID)
+                    self?.viewModel.toggleFollow(userID: userID)
                 }
             )
             return cell
@@ -192,9 +195,19 @@ final class UserListViewController: UIViewController {
     }
 
     private func apply(_ models: [UserCellModel], animated: Bool) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, UserCellModel>()
+        let changedIDs = models.compactMap { model -> Int? in
+            guard let previous = itemModels[model.userID], previous != model else { return nil }
+            return model.userID
+        }
+
+        itemModels = Dictionary(uniqueKeysWithValues: models.map { ($0.userID, $0) })
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Int>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(models, toSection: .main)
+        snapshot.appendItems(models.map(\.userID), toSection: .main)
+        if !changedIDs.isEmpty {
+            snapshot.reconfigureItems(changedIDs)
+        }
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
 
@@ -202,5 +215,28 @@ final class UserListViewController: UIViewController {
 
     @objc private func pullToRefresh() {
         viewModel.load()
+    }
+}
+
+// MARK: - UITableViewDelegate
+
+extension UserListViewController: UITableViewDelegate {
+
+    func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        guard let userID = dataSource.itemIdentifier(for: indexPath),
+              let model  = itemModels[userID]
+        else { return nil }
+
+        let title = model.isFollowed ? "Unfollow" : "Follow"
+        let action = UIContextualAction(style: .normal, title: title) { [weak self] _, _, done in
+            self?.viewModel.toggleFollow(userID: userID)
+            done(true)
+        }
+        action.backgroundColor = model.isFollowed ? .systemGray : .systemBlue
+        action.image = UIImage(systemName: model.isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }
