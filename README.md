@@ -25,6 +25,7 @@ The target is iPhone-only in portrait. I scoped it deliberately rather than ship
 - Renders each user with a circular avatar, display name, and locale-formatted reputation.
 - A tap on the follow button (or a leading swipe) toggles follow state. Followed rows show both a blue checkmark indicator and a tinted "Unfollow" button — the spec asks for an indicator *and* an unfollow option, so both are present at once.
 - A table-header segmented control toggles between **All** and **Followed**. When the filter yields nothing, a dedicated "No followed users yet" empty state is rendered (no retry button — it's not an error).
+- Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
 - Follow state is keyed by `user_id` and persists across launches.
 - The last successful first-page response is cached on disk. When the network fails and nothing is already in memory, the app shows the cached users behind an orange "Showing saved users" banner instead of a full-screen empty state.
 - On failure — offline, non-2xx, API error body, decoding — the app keeps any previously loaded rows and surfaces a retry alert. With no stale data and no cache, it falls back to a full-screen empty state with a "Try Again" button. Pull-to-refresh is also wired up.
@@ -60,7 +61,14 @@ StackOverflowUsers/
 │   ├── UserList/
 │   │   ├── UserListViewController.swift
 │   │   ├── UserListViewModel.swift   ViewState state machine, no UIKit
-│   │   └── UserCell.swift
+│   │   ├── UserCell.swift            adaptive layout at accessibility sizes
+│   │   ├── UserCellModel.swift
+│   │   ├── FilterHeaderView.swift    All / Followed segmented header
+│   │   └── UserListStateCopy.swift   error/empty title + message presenter
+│   ├── UserDetail/
+│   │   ├── UserDetailViewController.swift
+│   │   ├── UserDetailViewModel.swift
+│   │   └── BadgePillView.swift       reusable gold/silver/bronze pill
 │   └── Shared/
 │       └── EmptyStateView.swift
 ├── Foundation/
@@ -119,18 +127,11 @@ All XCTest cases live in the test target and run offline:
 - `ImageLoaderTests` — success, HTTP error, transport error, cache hit, and in-flight deduplication.
 - `FollowRepositoryTests` — follow/unfollow/toggle, persistence across reinstantiation, and 100-way concurrent writes against an ephemeral `UserDefaults(suiteName:)` suite.
 - `FileUserCacheTests` — round-trip save/load, missing-file nil, overwrite, and clear against a scoped temp directory.
+- `UserDetailViewModelTests` — reputation formatting, whitespace-trimmed location, nil-vs-zero badge counts, accept-rate suffix, and profile-URL pass-through.
 - `UserListViewModelTests` — state transitions for success and every error shape, stale preservation across failures, cache fallback, initial followed state, follow toggling, All/Followed filter transitions, and pagination (append, has_more stop, filter guard).
+- `UserListUITests` (XCUITest, end-to-end) — launch renders the top users, tapping follow flips the composed accessibility label, the Followed filter shows the right empty state, following then filtering shows only the followed user, and tapping a row pushes the detail with an open-profile button.
 
 No live network calls, no third-party mocking library — `URLProtocol` stubs and plain `XCTestCase` everywhere.
-
-## What I'd add with more time
-
-- **Full accessibility audit on device.** VoiceOver labels, custom actions, and Dynamic Type support are in place, but a pass with the Accessibility Inspector at the largest accessibility sizes would surface improvements (particularly announcements for the follow state transition and image-load state). Relevant to European Accessibility Act compliance coming into force in 2025.
-- **Dynamic Type at extreme sizes.** All labels use `preferredFont(forTextStyle:)` with `adjustsFontForContentSizeCategory = true` and `automaticDimension` row heights, but the layout at the accessibility sizes (XXXL+) should still be verified on a physical device with the Accessibility Inspector.
-- **User detail screen** with badges, location, and the Stack Overflow profile link.
-- **Image coalescence across rapid scrolling.** The `ImageLoader` already deduplicates in-flight requests by URL, but a short backoff on cell reuse (wait a few hundred milliseconds before firing) would further reduce redundant fetches during fast flicks.
-- **Treat warnings as errors.** `SWIFT_TREAT_WARNINGS_AS_ERRORS = YES` in release builds would lock in the current zero-warning state.
-- **Stack Apps API key.** Registering a free key and plumbing it through a build setting would lift the 300/day IP quota to 10,000/day for reviewers on shared IPs.
 
 ## Author
 
