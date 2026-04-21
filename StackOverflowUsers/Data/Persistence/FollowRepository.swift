@@ -13,7 +13,7 @@ protocol FollowRepositoryProtocol: Sendable {
 
 // MARK: - UserDefaultsFollowRepository
 
-final class UserDefaultsFollowRepository: FollowRepositoryProtocol {
+final class UserDefaultsFollowRepository: FollowRepositoryProtocol, @unchecked Sendable {
 
     private static let storageKey = "followed_user_ids"
 
