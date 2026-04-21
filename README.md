@@ -15,7 +15,16 @@ A small iOS app that shows the top 20 Stack Overflow users by reputation and let
 open StackOverflowUsers.xcodeproj
 ```
 
-Pick an iOS 16+ iPhone simulator and hit run. The `StackOverflowUsers` scheme is checked into `xcshareddata` so it shows up automatically after a fresh clone. If you'd rather (re)generate the project from scratch, install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` — `project.yml` is the source of truth for the project file.
+Pick an iOS 16+ iPhone simulator and hit run. Two shared schemes ship with the project:
+
+| Scheme | Configuration | Bundle ID | Display name |
+|---|---|---|---|
+| `StackOverflowUsers (Development)` | `Development` | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
+| `StackOverflowUsers (Production)` | `Production` | `com.brunovalente.StackOverflowUsers` | `Stack Users` |
+
+Build settings live in `Config/Shared.xcconfig`, `Config/Development.xcconfig`, and `Config/Production.xcconfig`. The display name, bundle-ID suffix, API base URL, and optional Stack Apps API key flow through those files into `Info.plist`. Development turns `ENABLE_TESTABILITY = YES` and adds a `DEVELOPMENT` compilation condition; Production enables whole-module optimization and adds a `PRODUCTION` condition. Both schemes can be switched from the scheme picker in Xcode.
+
+If you'd rather (re)generate the project from scratch, install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` — `project.yml` is the source of truth for the project file.
 
 The target is iPhone-only in portrait. I scoped it deliberately rather than shipping an untested Universal layout — the rest of the checklist matters more at this scope.
 
@@ -76,6 +85,11 @@ StackOverflowUsers/
 └── Resources/
     ├── Assets.xcassets
     └── Info.plist
+
+Config/
+├── Shared.xcconfig                   APP_BUNDLE_ID_BASE, APP_API_BASE_URL
+├── Development.xcconfig              .dev suffix, DEBUG/DEVELOPMENT flags
+└── Production.xcconfig               release optimisation, PRODUCTION flag
 ```
 
 A few things worth calling out:
@@ -116,9 +130,11 @@ To run the same thing locally:
 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
-  -scheme StackOverflowUsers \
+  -scheme 'StackOverflowUsers (Development)' \
   -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
+
+(Swap `(Development)` for `(Production)` to run the release-optimised build; tests pass under both.)
 
 All XCTest cases live in the test target and run offline:
 
