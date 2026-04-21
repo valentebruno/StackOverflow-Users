@@ -127,6 +127,74 @@ final class UserListViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: - Filter
+
+    func test_setFilter_toFollowedWithNoFollows_emitsEmptyState() async {
+        userService.outcome = .success([
+            .fixture(userId: 1, displayName: "Ann"),
+            .fixture(userId: 2, displayName: "Bob")
+        ])
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let after = makeRecorder(expecting: 1)
+        viewModel.setFilter(.followed)
+        let recorded = await after.wait()
+
+        XCTAssertEqual(recorded.last, .empty(.nothingFollowed))
+    }
+
+    func test_setFilter_toFollowedWithFollows_emitsFilteredList() async {
+        followRepository = MockFollowRepository(initial: [2])
+        viewModel = UserListViewModel(userService: userService, followRepository: followRepository)
+        userService.outcome = .success([
+            .fixture(userId: 1, displayName: "Ann"),
+            .fixture(userId: 2, displayName: "Bob"),
+            .fixture(userId: 3, displayName: "Cam")
+        ])
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let after = makeRecorder(expecting: 1)
+        viewModel.setFilter(.followed)
+        let recorded = await after.wait()
+
+        if case .loaded(let models) = recorded.last {
+            XCTAssertEqual(models.map(\.userID), [2])
+            XCTAssertTrue(models.first?.isFollowed == true)
+        } else {
+            XCTFail("Expected loaded with only followed users, got \(String(describing: recorded.last))")
+        }
+    }
+
+    func test_setFilter_backToAll_restoresFullList() async {
+        followRepository = MockFollowRepository(initial: [1])
+        viewModel = UserListViewModel(userService: userService, followRepository: followRepository)
+        userService.outcome = .success([
+            .fixture(userId: 1, displayName: "Ann"),
+            .fixture(userId: 2, displayName: "Bob")
+        ])
+        let initial = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await initial.wait()
+
+        let first = makeRecorder(expecting: 1)
+        viewModel.setFilter(.followed)
+        _ = await first.wait()
+
+        let second = makeRecorder(expecting: 1)
+        viewModel.setFilter(.all)
+        let recorded = await second.wait()
+
+        if case .loaded(let models) = recorded.last {
+            XCTAssertEqual(models.map(\.userID), [1, 2])
+        } else {
+            XCTFail("Expected loaded with all users")
+        }
+    }
+
     // MARK: - Initial followed state
 
     func test_load_withPreexistingFollowedIDs_reflectsInModels() async {

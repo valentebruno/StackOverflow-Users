@@ -62,7 +62,14 @@ final class EmptyStateView: UIView {
 
     // MARK: - Configure
 
-    func configure(title: String, message: String, showsRetry: Bool = true) {
+    func configure(
+        title: String,
+        message: String,
+        showsRetry: Bool = true,
+        systemImage: String = "wifi.exclamationmark"
+    ) {
+        let config = UIImage.SymbolConfiguration(pointSize: 48, weight: .regular)
+        iconImageView.image = UIImage(systemName: systemImage, withConfiguration: config)
         titleLabel.text = title
         messageLabel.text = message
         retryButton.isHidden = !showsRetry
