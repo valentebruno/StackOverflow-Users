@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		036A7A26011696256B3C4BAB /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214EC24B8EDFC1E54E4D39FA /* UserCell.swift */; };
+		0B14CFF8A2D94DF07CDA9D7F /* AppErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E985991A94298E278E1C2844 /* AppErrorTests.swift */; };
 		13F87AA5E9B233816718EFC4 /* FollowRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C96FA6AE28B488B688E9A370 /* FollowRepositoryTests.swift */; };
+		1AF1A9355B5FEE1FF10129CC /* UserCellModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */; };
 		2C5725AF1A64653036DDEAB2 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9478FDD56E504FDE9EAED78B /* UserService.swift */; };
 		367B1E58F5736731C532C177 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9C31F5499BEB2C83C5B924 /* User.swift */; };
 		4D67DEEE6CC1ACE1E9F650E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41674755A509D5978BFA7F4 /* AppDelegate.swift */; };
@@ -61,6 +63,7 @@
 		54436AAB6DD9FF572643DFCD /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
 		5791C4F7C824CF0506F88827 /* StackExchangeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackExchangeResponse.swift; sourceTree = "<group>"; };
 		596830B156A6954509F30542 /* FileUserCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUserCacheTests.swift; sourceTree = "<group>"; };
+		5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellModelTests.swift; sourceTree = "<group>"; };
 		67148707C19EF66F223D5742 /* UserPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPage.swift; sourceTree = "<group>"; };
 		765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModelTests.swift; sourceTree = "<group>"; };
 		780D52EFE9BB7653753F648C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -80,6 +83,7 @@
 		E2B3DB6436A439A5F1B1E872 /* DecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecodingTests.swift; sourceTree = "<group>"; };
 		E41674755A509D5978BFA7F4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModel.swift; sourceTree = "<group>"; };
+		E985991A94298E278E1C2844 /* AppErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppErrorTests.swift; sourceTree = "<group>"; };
 		EB4D143964C7757C5DAEF56A /* Fixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -227,6 +231,7 @@
 		D0A26303F8AC43C98A420BB3 /* StackOverflowUsersTests */ = {
 			isa = PBXGroup;
 			children = (
+				E985991A94298E278E1C2844 /* AppErrorTests.swift */,
 				DDC4D2ECE7CA036A95E057A3 /* Decoding */,
 				A3CEE562AF1899874F29A14B /* ImageLoading */,
 				45D53E53A6E9B67161A89A59 /* Network */,
@@ -259,6 +264,7 @@
 		D6280D6A6ACACAF83397C7D0 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */,
 				765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */,
 			);
 			path = Presentation;
@@ -401,6 +407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B14CFF8A2D94DF07CDA9D7F /* AppErrorTests.swift in Sources */,
 				B0CF006D65F37149D7509678 /* DecodingTests.swift in Sources */,
 				962A9E1EE7451B434D785533 /* FileUserCacheTests.swift in Sources */,
 				9F5D5330C38894CC52E0C7AB /* Fixtures.swift in Sources */,
@@ -409,6 +416,7 @@
 				C0CAFCA4CC22FE9386C480CE /* InitialsImageGeneratorTests.swift in Sources */,
 				C5CE871562AAB8F7D7202BE0 /* MockURLProtocol.swift in Sources */,
 				F21371EED23E667BC3982C43 /* Mocks.swift in Sources */,
+				1AF1A9355B5FEE1FF10129CC /* UserCellModelTests.swift in Sources */,
 				E559F19932881EB8482F5B27 /* UserListViewModelTests.swift in Sources */,
 				AEA9B13EAE90CD316830B32A /* UserServiceTests.swift in Sources */,
 			);
