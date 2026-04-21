@@ -21,12 +21,13 @@ The target is iPhone-only in portrait. I scoped it deliberately rather than ship
 
 ## What it does
 
-- Fetches the top 20 users from `https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow` on launch.
+- Fetches the top 20 users from `https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow` on launch and appends the next page as you scroll (infinite scroll, respects the API's `has_more` flag).
 - Renders each user with a circular avatar, display name, and locale-formatted reputation.
 - A tap on the follow button (or a leading swipe) toggles follow state. Followed rows show both a blue checkmark indicator and a tinted "Unfollow" button — the spec asks for an indicator *and* an unfollow option, so both are present at once.
 - A table-header segmented control toggles between **All** and **Followed**. When the filter yields nothing, a dedicated "No followed users yet" empty state is rendered (no retry button — it's not an error).
 - Follow state is keyed by `user_id` and persists across launches.
-- On failure — offline, non-2xx, API error body, decoding — the app keeps any previously loaded rows and surfaces a retry alert. With no stale data, it falls back to a full-screen empty state with a "Try Again" button. Pull-to-refresh is also wired up.
+- The last successful first-page response is cached on disk. When the network fails and nothing is already in memory, the app shows the cached users behind an orange "Showing saved users" banner instead of a full-screen empty state.
+- On failure — offline, non-2xx, API error body, decoding — the app keeps any previously loaded rows and surfaces a retry alert. With no stale data and no cache, it falls back to a full-screen empty state with a "Try Again" button. Pull-to-refresh is also wired up.
 
 ## Architecture
 
@@ -38,6 +39,7 @@ Domain/             User, StackExchangeResponse, AppError — pure value types
 Data/
   Network/          UserService: URLSession + decoder, maps errors into AppError
   Persistence/      UserDefaultsFollowRepository: Set<Int> behind an unfair lock
+                    FileUserCache: JSON-on-disk cache for offline fallback
   ImageLoading/     ImageLoader actor: NSCache + in-flight dedup
 Presentation/
   UserList/         View model, view controller, cell, cell model
@@ -47,7 +49,7 @@ Foundation/         String+HTMLEntities
 
 A few things worth calling out:
 
-**The view model has no UIKit import.** It exposes a `ViewState` enum (`idle / loading / loaded([UserCellModel]) / empty(EmptyReason) / failed(AppError, stale: [UserCellModel])`) through a closure. That's enough to test every state transition without touching a table view. I went with a closure rather than Combine because the surface area doesn't justify the extra concept; it's easy to port later if the app grows.
+**The view model has no UIKit import.** It exposes a `ViewState` enum (`idle / loading / loaded / stale / empty / failed`) through a closure. That's enough to test every state transition without touching a table view. I went with a closure rather than Combine because the surface area doesn't justify the extra concept; it's easy to port later if the app grows.
 
 **`ImageLoader` is an actor** so cache reads/writes and in-flight deduplication don't need explicit locking. When two cells request the same avatar URL concurrently, the second call awaits the first task rather than firing a duplicate request. Decoded bitmaps come back via `UIImage.preparingForDisplay()` so the main thread only sees pre-rendered images. Cancellation happens from the cell's `prepareForReuse` — the `Task` returned from `configure` is held directly on the cell (no Objective-C associated objects).
 
@@ -86,20 +88,22 @@ xcodebuild -project StackOverflowUsers.xcodeproj \
 All XCTest cases live in the test target and run offline:
 
 - `DecodingTests` — success wrapper, API error wrapper, empty items, malformed JSON, badge count integers, missing `accept_rate`, HTML entity decoding.
-- `UserServiceTests` — stubbed `URLSession` via `URLProtocol` covering HTTPS request shape, 2xx, 5xx, API error body, malformed body, empty items, and transport failure.
+- `UserServiceTests` — stubbed `URLSession` via `URLProtocol` covering HTTPS request shape, page/pageSize query items, 2xx, 5xx, API error body, malformed body, empty items, and transport failure.
 - `ImageLoaderTests` — success, HTTP error, transport error, cache hit, and in-flight deduplication.
 - `FollowRepositoryTests` — follow/unfollow/toggle, persistence across reinstantiation, and 100-way concurrent writes against an ephemeral `UserDefaults(suiteName:)` suite.
-- `UserListViewModelTests` — state transitions for success and every error shape, stale preservation across failures, initial followed state, follow toggling, and All/Followed filter transitions.
+- `FileUserCacheTests` — round-trip save/load, missing-file nil, overwrite, and clear against a scoped temp directory.
+- `UserListViewModelTests` — state transitions for success and every error shape, stale preservation across failures, cache fallback, initial followed state, follow toggling, All/Followed filter transitions, and pagination (append, has_more stop, filter guard).
 
 No live network calls, no third-party mocking library — `URLProtocol` stubs and plain `XCTestCase` everywhere.
 
 ## What I'd add with more time
 
-- **Pagination.** The API supports `page`/`pagesize`. Adding a `loadNextPage()` intent on the view model and wiring `scrollViewDidScroll` to it is a small follow-up.
-- **Offline cache.** Persisting the last successful response to disk (JSON via `FileManager`) would let the app show the previous list with a "showing cached data" banner instead of the full-screen empty state when there's no network.
 - **Full accessibility audit on device.** VoiceOver labels, custom actions, and Dynamic Type support are in place, but a pass with the Accessibility Inspector at the largest accessibility sizes would surface improvements (particularly announcements for the follow state transition and image-load state). Relevant to European Accessibility Act compliance coming into force in 2025.
+- **Dynamic Type at extreme sizes.** All labels use `preferredFont(forTextStyle:)` with `adjustsFontForContentSizeCategory = true` and `automaticDimension` row heights, but the layout at the accessibility sizes (XXXL+) should still be verified on a physical device with the Accessibility Inspector.
 - **User detail screen** with badges, location, and the Stack Overflow profile link.
+- **Image coalescence across rapid scrolling.** The `ImageLoader` already deduplicates in-flight requests by URL, but a short backoff on cell reuse (wait a few hundred milliseconds before firing) would further reduce redundant fetches during fast flicks.
 - **Treat warnings as errors.** `SWIFT_TREAT_WARNINGS_AS_ERRORS = YES` in release builds would lock in the current zero-warning state.
+- **Stack Apps API key.** Registering a free key and plumbing it through a build setting would lift the 300/day IP quota to 10,000/day for reviewers on shared IPs.
 
 ## Author
 
