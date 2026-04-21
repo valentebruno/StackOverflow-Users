@@ -165,40 +165,85 @@ final class UserCell: UITableViewCell {
         followButton.accessibilityLabel = isFollowed ? "Unfollow \(name)" : "Follow \(name)"
     }
 
+    private let textStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 2
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private let trailingStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private let outerStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 12
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     private func setupLayout() {
-        let textStack = UIStackView(arrangedSubviews: [nameLabel, reputationLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 2
-        textStack.translatesAutoresizingMaskIntoConstraints = false
+        textStack.addArrangedSubview(nameLabel)
+        textStack.addArrangedSubview(reputationLabel)
 
-        let trailingStack = UIStackView(arrangedSubviews: [followedIndicator, followButton])
-        trailingStack.axis = .horizontal
-        trailingStack.spacing = 8
-        trailingStack.alignment = .center
-        trailingStack.translatesAutoresizingMaskIntoConstraints = false
+        trailingStack.addArrangedSubview(followedIndicator)
+        trailingStack.addArrangedSubview(followButton)
 
-        contentView.addSubview(avatarImageView)
-        contentView.addSubview(textStack)
-        contentView.addSubview(trailingStack)
+        outerStack.addArrangedSubview(avatarImageView)
+        outerStack.addArrangedSubview(textStack)
+        outerStack.addArrangedSubview(trailingStack)
+
+        contentView.addSubview(outerStack)
 
         NSLayoutConstraint.activate([
-            avatarImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            avatarImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            outerStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            outerStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            outerStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor, constant: 8),
+            outerStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor, constant: -8),
+
             avatarImageView.widthAnchor.constraint(equalToConstant: 44),
             avatarImageView.heightAnchor.constraint(equalToConstant: 44),
-
-            textStack.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 12),
-            textStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            textStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingStack.leadingAnchor, constant: -12),
-
-            trailingStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            trailingStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
 
             followedIndicator.widthAnchor.constraint(equalToConstant: 22),
             followedIndicator.heightAnchor.constraint(equalToConstant: 22),
 
             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
         ])
+
+        applyContentSizeLayout(for: traitCollection)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory else {
+            return
+        }
+        applyContentSizeLayout(for: traitCollection)
+    }
+
+    private func applyContentSizeLayout(for traits: UITraitCollection) {
+        if traits.preferredContentSizeCategory.isAccessibilityCategory {
+            outerStack.axis = .vertical
+            outerStack.alignment = .leading
+            outerStack.spacing = 8
+            trailingStack.axis = .horizontal
+            nameLabel.numberOfLines = 0
+        } else {
+            outerStack.axis = .horizontal
+            outerStack.alignment = .center
+            outerStack.spacing = 12
+            trailingStack.axis = .horizontal
+            nameLabel.numberOfLines = 1
+        }
     }
 }
 
