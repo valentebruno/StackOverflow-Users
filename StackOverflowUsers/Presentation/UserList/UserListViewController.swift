@@ -54,6 +54,19 @@ final class UserListViewController: UIViewController {
         return control
     }()
 
+    private lazy var staleBannerLabel: UILabel = {
+        let label = UILabel()
+        label.font = .preferredFont(forTextStyle: .footnote)
+        label.adjustsFontForContentSizeCategory = true
+        label.textColor = .white
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.backgroundColor = .systemOrange
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        return label
+    }()
+
     // MARK: - State
 
     private var itemModels: [Int: UserCellModel] = [:]
@@ -85,6 +98,7 @@ final class UserListViewController: UIViewController {
     // MARK: - Setup
 
     private func setupViews() {
+        view.addSubview(staleBannerLabel)
         view.addSubview(tableView)
         view.addSubview(emptyStateView)
         view.addSubview(loadingIndicator)
@@ -95,7 +109,12 @@ final class UserListViewController: UIViewController {
         tableView.tableHeaderView = makeFilterHeader()
 
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            staleBannerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            staleBannerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            staleBannerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            staleBannerLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
+
+            tableView.topAnchor.constraint(equalTo: staleBannerLabel.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -135,11 +154,21 @@ final class UserListViewController: UIViewController {
             refreshControl.endRefreshing()
             tableView.isHidden = false
             emptyStateView.isHidden = true
+            setStaleBanner(visible: false)
             apply(models, animated: true)
+
+        case .stale(let models, let error):
+            loadingIndicator.stopAnimating()
+            refreshControl.endRefreshing()
+            tableView.isHidden = false
+            emptyStateView.isHidden = true
+            setStaleBanner(visible: true, error: error)
+            apply(models, animated: false)
 
         case .empty(let reason):
             loadingIndicator.stopAnimating()
             refreshControl.endRefreshing()
+            setStaleBanner(visible: false)
             apply([], animated: true)
             tableView.isHidden = true
             emptyStateView.isHidden = false
@@ -153,6 +182,7 @@ final class UserListViewController: UIViewController {
         case .failed(let error, let stale):
             loadingIndicator.stopAnimating()
             refreshControl.endRefreshing()
+            setStaleBanner(visible: false)
 
             if stale.isEmpty {
                 tableView.isHidden = true
@@ -168,6 +198,13 @@ final class UserListViewController: UIViewController {
                 presentErrorBanner(for: error)
             }
         }
+    }
+
+    private func setStaleBanner(visible: Bool, error: AppError? = nil) {
+        staleBannerLabel.isHidden = !visible
+        guard visible else { return }
+        let reason = error.map(Self.errorTitle(for:)) ?? "Offline"
+        staleBannerLabel.text = "Showing saved users · \(reason)"
     }
 
     private static func emptyTitle(for reason: UserListViewModel.EmptyReason) -> String {

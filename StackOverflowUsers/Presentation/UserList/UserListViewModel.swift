@@ -18,6 +18,7 @@ final class UserListViewModel {
         case idle
         case loading
         case loaded([UserCellModel])
+        case stale([UserCellModel], AppError)
         case empty(EmptyReason)
         case failed(AppError, stale: [UserCellModel])
     }
@@ -40,6 +41,7 @@ final class UserListViewModel {
 
     private let userService: UserServiceProtocol
     private let followRepository: FollowRepositoryProtocol
+    private let userCache: UserCacheProtocol?
 
     // MARK: - Pagination
 
@@ -54,10 +56,12 @@ final class UserListViewModel {
     init(
         userService: UserServiceProtocol,
         followRepository: FollowRepositoryProtocol,
+        userCache: UserCacheProtocol? = nil,
         pageSize: Int = 20
     ) {
         self.userService = userService
         self.followRepository = followRepository
+        self.userCache = userCache
         self.pageSize = pageSize
     }
 
@@ -86,14 +90,15 @@ final class UserListViewModel {
                 self.currentPage = 1
                 self.hasMorePages = page.hasMore
                 self.emitDataState(followedIDs: followed)
+                await self.userCache?.save(page.users)
             } catch let error as AppError {
                 guard !Task.isCancelled else { return }
-                self.state = .failed(error, stale: staleCellModels)
+                await self.fallBackToCache(with: error, staleCellModels: staleCellModels)
             } catch is CancellationError {
                 return
             } catch {
                 guard !Task.isCancelled else { return }
-                self.state = .failed(.networkUnavailable, stale: staleCellModels)
+                await self.fallBackToCache(with: .networkUnavailable, staleCellModels: staleCellModels)
             }
         }
     }
@@ -148,6 +153,26 @@ final class UserListViewModel {
 
     // MARK: - Private
 
+    private func fallBackToCache(
+        with error: AppError,
+        staleCellModels: [UserCellModel]
+    ) async {
+        if !staleCellModels.isEmpty {
+            state = .failed(error, stale: staleCellModels)
+            return
+        }
+        if let cached = await userCache?.load(), !cached.isEmpty {
+            let followed = await followRepository.followedUserIDs()
+            users = cached
+            currentPage = 1
+            hasMorePages = false
+            let models = Self.cellModels(from: cached, followedIDs: followed)
+            state = .stale(models, error)
+            return
+        }
+        state = .failed(error, stale: [])
+    }
+
     private func emitDataState(followedIDs: Set<Int>) {
         let all = Self.cellModels(from: users, followedIDs: followedIDs)
         switch filter {
@@ -162,6 +187,7 @@ final class UserListViewModel {
     private func currentCellModels() -> [UserCellModel] {
         switch state {
         case .loaded(let models):     return models
+        case .stale(let models, _):   return models
         case .failed(_, let stale):   return stale
         case .idle, .loading, .empty: return []
         }

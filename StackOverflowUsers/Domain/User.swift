@@ -2,7 +2,7 @@ import Foundation
 
 // MARK: - User
 
-struct User: Decodable, Hashable, Sendable {
+struct User: Codable, Hashable, Sendable {
     let userId: Int
     let displayName: String
     let reputation: Int
@@ -26,7 +26,7 @@ struct User: Decodable, Hashable, Sendable {
 
 // MARK: - BadgeCounts
 
-struct BadgeCounts: Decodable, Hashable, Sendable {
+struct BadgeCounts: Codable, Hashable, Sendable {
     let gold: Int?
     let silver: Int?
     let bronze: Int?

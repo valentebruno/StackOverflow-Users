@@ -15,11 +15,13 @@ final class AppCoordinator: Coordinator {
     func start() {
         let userService      = UserService()
         let followRepository = UserDefaultsFollowRepository()
+        let userCache        = FileUserCache()
         let imageLoader      = ImageLoader.shared
 
         let viewModel = UserListViewModel(
             userService: userService,
-            followRepository: followRepository
+            followRepository: followRepository,
+            userCache: userCache
         )
         let viewController = UserListViewController(
             viewModel: viewModel,
