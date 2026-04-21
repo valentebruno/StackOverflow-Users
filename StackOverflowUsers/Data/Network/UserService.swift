@@ -18,7 +18,7 @@ final class UserService: UserServiceProtocol {
 
     init(
         session: URLSession = UserService.defaultSession(),
-        baseURL: URL = URL(string: "https://api.stackexchange.com/2.2")!,
+        baseURL: URL = UserService.configuredBaseURL(),
         apiKey: String? = UserService.configuredAPIKey()
     ) {
         self.session = session
@@ -27,7 +27,17 @@ final class UserService: UserServiceProtocol {
         self.apiKey = apiKey
     }
 
-    // MARK: - API key
+    // MARK: - Info.plist overrides
+
+    private static let fallbackBaseURL = URL(string: "https://api.stackexchange.com/2.2")!
+
+    private static func configuredBaseURL() -> URL {
+        guard let raw = Bundle.main.object(forInfoDictionaryKey: "StackExchangeAPIBaseURL") as? String else {
+            return fallbackBaseURL
+        }
+        let trimmed = raw.trimmingCharacters(in: .whitespaces)
+        return URL(string: trimmed) ?? fallbackBaseURL
+    }
 
     private static func configuredAPIKey() -> String? {
         guard let raw = Bundle.main.object(forInfoDictionaryKey: "StackExchangeAPIKey") as? String else {

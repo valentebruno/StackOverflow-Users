@@ -5,7 +5,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>Stack Users</string>
+    <string>$(APP_DISPLAY_NAME)</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -24,6 +24,8 @@
     <true/>
     <key>StackExchangeAPIKey</key>
     <string>$(STACK_EXCHANGE_API_KEY)</string>
+    <key>StackExchangeAPIBaseURL</key>
+    <string>$(APP_API_BASE_URL)</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
