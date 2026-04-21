@@ -18,6 +18,7 @@
 		601BBE0EFC873B22983D72EB /* FollowRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83701DCD9AE51120AC2AC9E5 /* FollowRepository.swift */; };
 		65A5B40BE94C3166E9E5F245 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D3802ABF99F2CB18D07BABF /* AppCoordinator.swift */; };
 		67FBB2087A48F60A885C694F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84098B4EBEDB4140F30EB0C4 /* Assets.xcassets */; };
+		8933CFA1A1A09646CEB119F7 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064987EF8829131DC1F4E39D /* EmptyStateView.swift */; };
 		9B9DF1F67C5CE0936C5AD09C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9E5A054471B38D4BFF7A537 /* SceneDelegate.swift */; };
 		BA1498BD161A0227FF61E8BF /* UserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EA734AAD4FE44C1A3F3243 /* UserListViewModel.swift */; };
 		DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48976274696155B90FBD74CB /* InitialsImageGenerator.swift */; };
@@ -35,6 +36,7 @@
 
 /* Begin PBXFileReference section */
 		045FF673C5A7ED735D6CA21D /* StackOverflowUsers.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = StackOverflowUsers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		064987EF8829131DC1F4E39D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		0D16649A311B26C99B1E2346 /* StackOverflowUsersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = StackOverflowUsersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D3802ABF99F2CB18D07BABF /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		214EC24B8EDFC1E54E4D39FA /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 		39E280AF3B7A902295B7E7E5 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				A98713AE79B56D99DDF6BCA5 /* Shared */,
 				D2A5248292CFC5D248F0B15F /* UserList */,
 			);
 			path = Presentation;
@@ -126,6 +129,14 @@
 				6BCEFCEE78E99F4866CD4584 /* Models.swift */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		A98713AE79B56D99DDF6BCA5 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				064987EF8829131DC1F4E39D /* EmptyStateView.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		AA86E781F1B3CC2143ABA26E /* Network */ = {
@@ -278,6 +289,7 @@
 				65A5B40BE94C3166E9E5F245 /* AppCoordinator.swift in Sources */,
 				4D67DEEE6CC1ACE1E9F650E6 /* AppDelegate.swift in Sources */,
 				4E1CF1DF39ECFF9F92B4DD36 /* Coordinator.swift in Sources */,
+				8933CFA1A1A09646CEB119F7 /* EmptyStateView.swift in Sources */,
 				601BBE0EFC873B22983D72EB /* FollowRepository.swift in Sources */,
 				56BF7D2506ABB1B429DB8A72 /* ImageLoader.swift in Sources */,
 				DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */,
