@@ -14,13 +14,15 @@ A small iOS app that shows the top 20 Stack Overflow users by reputation and let
 open StackOverflowUsers.xcodeproj
 ```
 
-Pick an iOS 16+ simulator and hit run. If you'd rather (re)generate the project from scratch, install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` — `project.yml` is the source of truth for the project file.
+Pick an iOS 16+ iPhone simulator and hit run. The `StackOverflowUsers` scheme is checked into `xcshareddata` so it shows up automatically after a fresh clone. If you'd rather (re)generate the project from scratch, install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` — `project.yml` is the source of truth for the project file.
+
+The target is iPhone-only in portrait. I scoped it deliberately rather than shipping an untested Universal layout — the rest of the checklist matters more at this scope.
 
 ## What it does
 
 - Fetches the top 20 users from `https://api.stackexchange.com/2.2/users?order=desc&sort=reputation&site=stackoverflow` on launch.
 - Renders each user with a circular avatar, display name, and locale-formatted reputation.
-- A tap on the follow button (or a leading swipe) toggles follow state. Followed rows show a checkmark and an "Unfollow" action.
+- A tap on the follow button (or a leading swipe) toggles follow state. Followed rows show both a blue checkmark indicator and a tinted "Unfollow" button — the spec asks for an indicator *and* an unfollow option, so both are present at once.
 - Follow state is keyed by `user_id` and persists across launches.
 - On failure — offline, non-2xx, API error body, decoding — the app keeps any previously loaded rows and shows a retry alert. With no stale data, it falls back to a full-screen empty state with a "Try Again" button. Pull-to-refresh is also wired up.
 
