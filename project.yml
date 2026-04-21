@@ -3,6 +3,9 @@ options:
   bundleIdPrefix: com.brunovalente
   deploymentTarget:
     iOS: "16.0"
+configs:
+  Development: debug
+  Production: release
 settings:
   base:
     SWIFT_VERSION: 5.0
@@ -22,13 +25,15 @@ targets:
       - path: StackOverflowUsers
     resources:
       - path: StackOverflowUsers/Resources
+    configFiles:
+      Development: Config/Development.xcconfig
+      Production: Config/Production.xcconfig
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.brunovalente.StackOverflowUsers
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX)
         PRODUCT_NAME: StackOverflowUsers
         INFOPLIST_FILE: StackOverflowUsers/Resources/Info.plist
         GENERATE_INFOPLIST_FILE: NO
-        STACK_EXCHANGE_API_KEY: ""
   StackOverflowUsersTests:
     type: bundle.unit-test
     platform: iOS
@@ -55,12 +60,41 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: StackOverflowUsers
 schemes:
-  StackOverflowUsers:
+  StackOverflowUsers (Development):
     build:
       targets:
         StackOverflowUsers: all
+      config: Development
+    run:
+      config: Development
     test:
+      config: Development
       targets:
         - StackOverflowUsersTests
         - StackOverflowUsersUITests
       gatherCoverageData: false
+    profile:
+      config: Development
+    analyze:
+      config: Development
+    archive:
+      config: Development
+  StackOverflowUsers (Production):
+    build:
+      targets:
+        StackOverflowUsers: all
+      config: Production
+    run:
+      config: Production
+    test:
+      config: Production
+      targets:
+        - StackOverflowUsersTests
+        - StackOverflowUsersUITests
+      gatherCoverageData: false
+    profile:
+      config: Production
+    analyze:
+      config: Production
+    archive:
+      config: Production
