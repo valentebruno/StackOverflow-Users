@@ -93,11 +93,14 @@ final class UserListUITests: XCTestCase {
         XCTAssertTrue(jonCell.waitForExistence(timeout: 5))
         jonCell.buttons["Follow Jon Skeet"].tap()
 
+        // Wait for the follow state to commit before switching filters
+        XCTAssertTrue(jonCell.buttons["Unfollow Jon Skeet"].waitForExistence(timeout: 2))
+
         selectFollowedFilter()
 
         XCTAssertTrue(app.cells["user-cell-101"].waitForExistence(timeout: 2))
-        XCTAssertFalse(app.cells["user-cell-202"].exists)
-        XCTAssertFalse(app.cells["user-cell-303"].exists)
+        XCTAssertTrue(app.cells["user-cell-202"].waitForNonExistence(timeout: 2))
+        XCTAssertTrue(app.cells["user-cell-303"].waitForNonExistence(timeout: 2))
     }
 
     // MARK: - Detail navigation
