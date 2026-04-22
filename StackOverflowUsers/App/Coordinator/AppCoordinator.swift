@@ -60,7 +60,7 @@ final class AppCoordinator: Coordinator {
             self?.showDetail(for: user, imageLoader: imageLoader)
         }
 
-        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationBar.prefersLargeTitles = false
         navigationController.setViewControllers([viewController], animated: false)
 
         guard animated else {
