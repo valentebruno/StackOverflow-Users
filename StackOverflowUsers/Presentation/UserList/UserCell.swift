@@ -25,6 +25,16 @@ final class UserCell: UITableViewCell {
         return iv
     }()
 
+    private let avatarContainerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 24
+        view.layer.borderWidth = 1
+        view.layer.borderColor = StackOverflowPalette.separator.cgColor
+        view.backgroundColor = StackOverflowPalette.contentBackground
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private let nameLabel: UILabel = {
         let label = UILabel()
         StackOverflowTypography.apply(.body3, weight: .regular, to: label)
@@ -53,16 +63,11 @@ final class UserCell: UITableViewCell {
         return button
     }()
 
-    private let followedIndicator: UIImageView = {
-        let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-        let iv = UIImageView(image: UIImage(systemName: "checkmark.seal.fill", withConfiguration: config))
-        iv.tintColor = StackOverflowPalette.success
-        iv.isHidden = true
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.setContentHuggingPriority(.required, for: .horizontal)
-        iv.isAccessibilityElement = true
-        iv.accessibilityLabel = "Following"
-        return iv
+    private let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = StackOverflowPalette.separator
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     // MARK: - Init
@@ -87,7 +92,7 @@ final class UserCell: UITableViewCell {
         avatarImageView.image = nil
         nameLabel.text = nil
         reputationLabel.text = nil
-        followedIndicator.isHidden = true
+        updateAvatarRing(isFollowed: false)
         onFollowTapped = nil
         lastConfiguredModel = nil
     }
@@ -107,17 +112,13 @@ final class UserCell: UITableViewCell {
 
         nameLabel.text = model.displayName
         reputationLabel.text = model.formattedReputation
-        followedIndicator.isHidden = !model.isFollowed
+        updateAvatarRing(isFollowed: model.isFollowed)
         updateFollowButton(isFollowed: model.isFollowed, name: model.displayName)
         updateAccessibility(model: model)
         announceFollowChangeIfNeeded(previous: previousModel, current: model)
         lastConfiguredModel = model
         accessibilityIdentifier = "user-cell-\(model.userID)"
         followButton.accessibilityIdentifier = "follow-button-\(model.userID)"
-        followedIndicator.accessibilityIdentifier = "followed-indicator-\(model.userID)"
-        followedIndicator.isAccessibilityElement = model.isFollowed
-        followedIndicator.accessibilityLabel = "Following"
-        followedIndicator.accessibilityTraits = .image
 
         let placeholder = InitialsImageGenerator.image(for: model.displayName)
         avatarImageView.image = placeholder
@@ -193,6 +194,13 @@ final class UserCell: UITableViewCell {
         followButton.accessibilityLabel = isFollowed ? "Unfollow \(name)" : "Follow \(name)"
     }
 
+    private func updateAvatarRing(isFollowed: Bool) {
+        avatarContainerView.layer.borderColor = (isFollowed
+            ? StackOverflowPalette.accent
+            : StackOverflowPalette.separator
+        ).cgColor
+    }
+
     private let textStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -220,17 +228,19 @@ final class UserCell: UITableViewCell {
     }()
 
     private func setupLayout() {
+        avatarContainerView.addSubview(avatarImageView)
+
         textStack.addArrangedSubview(nameLabel)
         textStack.addArrangedSubview(reputationLabel)
 
-        trailingStack.addArrangedSubview(followedIndicator)
         trailingStack.addArrangedSubview(followButton)
 
-        outerStack.addArrangedSubview(avatarImageView)
+        outerStack.addArrangedSubview(avatarContainerView)
         outerStack.addArrangedSubview(textStack)
         outerStack.addArrangedSubview(trailingStack)
 
         contentView.addSubview(outerStack)
+        contentView.addSubview(separatorView)
 
         NSLayoutConstraint.activate([
             outerStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
@@ -238,11 +248,18 @@ final class UserCell: UITableViewCell {
             outerStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor, constant: 8),
             outerStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor, constant: -8),
 
+            avatarContainerView.widthAnchor.constraint(equalToConstant: 48),
+            avatarContainerView.heightAnchor.constraint(equalToConstant: 48),
+
+            avatarImageView.centerXAnchor.constraint(equalTo: avatarContainerView.centerXAnchor),
+            avatarImageView.centerYAnchor.constraint(equalTo: avatarContainerView.centerYAnchor),
             avatarImageView.widthAnchor.constraint(equalToConstant: 44),
             avatarImageView.heightAnchor.constraint(equalToConstant: 44),
 
-            followedIndicator.widthAnchor.constraint(equalToConstant: 22),
-            followedIndicator.heightAnchor.constraint(equalToConstant: 22),
+            separatorView.leadingAnchor.constraint(equalTo: textStack.leadingAnchor),
+            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale),
 
             contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
         ])
@@ -252,10 +269,12 @@ final class UserCell: UITableViewCell {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        guard traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory else {
-            return
+        updateAvatarRing(isFollowed: lastConfiguredModel?.isFollowed == true)
+        separatorView.backgroundColor = StackOverflowPalette.separator
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            applyContentSizeLayout(for: traitCollection)
         }
-        applyContentSizeLayout(for: traitCollection)
     }
 
     private func applyContentSizeLayout(for traits: UITraitCollection) {

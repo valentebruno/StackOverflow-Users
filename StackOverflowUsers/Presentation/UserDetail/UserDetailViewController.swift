@@ -20,6 +20,12 @@ final class UserDetailViewController: UIViewController {
         return view
     }()
 
+    private let scrollContentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     private let contentStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -37,6 +43,16 @@ final class UserDetailViewController: UIViewController {
         view.backgroundColor = StackOverflowPalette.componentAltBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         view.accessibilityLabel = "User avatar"
+        return view
+    }()
+
+    private let avatarContainerView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 62
+        view.layer.borderWidth = 1
+        view.layer.borderColor = StackOverflowPalette.separator.cgColor
+        view.backgroundColor = StackOverflowPalette.contentBackground
+        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
@@ -145,9 +161,11 @@ final class UserDetailViewController: UIViewController {
 
     private func setupLayout() {
         view.addSubview(scrollView)
-        scrollView.addSubview(contentStack)
+        avatarContainerView.addSubview(avatarImageView)
+        scrollView.addSubview(scrollContentView)
+        scrollContentView.addSubview(contentStack)
 
-        contentStack.addArrangedSubview(avatarImageView)
+        contentStack.addArrangedSubview(avatarContainerView)
         contentStack.addArrangedSubview(nameLabel)
         contentStack.addArrangedSubview(reputationLabel)
         contentStack.addArrangedSubview(acceptRateLabel)
@@ -155,13 +173,11 @@ final class UserDetailViewController: UIViewController {
         contentStack.addArrangedSubview(locationLabel)
         contentStack.addArrangedSubview(profileButton)
 
-        contentStack.setCustomSpacing(20, after: avatarImageView)
+        contentStack.setCustomSpacing(20, after: avatarContainerView)
         contentStack.setCustomSpacing(24, after: badgesStack)
 
-        // On iPad the scroll view stretches the full window width; cap the content at
-        // a readable measure and centre it while still letting it shrink on iPhone.
         let widthToFrame = contentStack.widthAnchor.constraint(
-            equalTo: scrollView.frameLayoutGuide.widthAnchor,
+            equalTo: scrollContentView.widthAnchor,
             constant: -48
         )
         widthToFrame.priority = .defaultHigh
@@ -172,15 +188,37 @@ final class UserDetailViewController: UIViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 32),
-            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -32),
-            contentStack.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
+            scrollContentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            scrollContentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            scrollContentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            scrollContentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            scrollContentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
+            scrollContentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
+
+            contentStack.topAnchor.constraint(equalTo: scrollContentView.topAnchor, constant: 32),
+            contentStack.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
+            contentStack.leadingAnchor.constraint(greaterThanOrEqualTo: scrollContentView.leadingAnchor, constant: 24),
+            contentStack.trailingAnchor.constraint(lessThanOrEqualTo: scrollContentView.trailingAnchor, constant: -24),
+            scrollContentView.bottomAnchor.constraint(greaterThanOrEqualTo: contentStack.bottomAnchor, constant: 32),
             contentStack.widthAnchor.constraint(lessThanOrEqualToConstant: 560),
             widthToFrame,
 
+            avatarContainerView.widthAnchor.constraint(equalToConstant: 124),
+            avatarContainerView.heightAnchor.constraint(equalToConstant: 124),
+
+            avatarImageView.centerXAnchor.constraint(equalTo: avatarContainerView.centerXAnchor),
+            avatarImageView.centerYAnchor.constraint(equalTo: avatarContainerView.centerYAnchor),
             avatarImageView.widthAnchor.constraint(equalToConstant: 120),
-            avatarImageView.heightAnchor.constraint(equalToConstant: 120)
+            avatarImageView.heightAnchor.constraint(equalToConstant: 120),
+
+            profileButton.leadingAnchor.constraint(greaterThanOrEqualTo: contentStack.leadingAnchor),
+            profileButton.trailingAnchor.constraint(lessThanOrEqualTo: contentStack.trailingAnchor)
         ])
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        avatarContainerView.layer.borderColor = StackOverflowPalette.separator.cgColor
     }
 
     private func configure() {

@@ -20,11 +20,10 @@ final class UserListViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .plain)
         table.backgroundColor = StackOverflowPalette.appBackground
-        table.separatorColor = StackOverflowPalette.separator
+        table.separatorStyle = .none
         table.register(UserCell.self, forCellReuseIdentifier: UserCell.reuseIdentifier)
         table.rowHeight = UITableView.automaticDimension
         table.estimatedRowHeight = 72
-        table.separatorInset = UIEdgeInsets(top: 0, left: 72, bottom: 0, right: 0)
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()

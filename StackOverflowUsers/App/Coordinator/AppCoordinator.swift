@@ -81,12 +81,16 @@ final class AppCoordinator: Coordinator {
         let navigationAppearance = UINavigationBarAppearance()
         navigationAppearance.configureWithOpaqueBackground()
         navigationAppearance.backgroundColor = StackOverflowPalette.contentBackground
-        navigationAppearance.titleTextAttributes = [
-            .foregroundColor: StackOverflowPalette.textPrimary
-        ]
-        navigationAppearance.largeTitleTextAttributes = [
-            .foregroundColor: StackOverflowPalette.textPrimary
-        ]
+        navigationAppearance.titleTextAttributes = StackOverflowTypography.textAttributes(
+            .body3,
+            weight: .semibold,
+            color: StackOverflowPalette.textPrimary
+        )
+        navigationAppearance.largeTitleTextAttributes = StackOverflowTypography.textAttributes(
+            .headline2,
+            weight: .semibold,
+            color: StackOverflowPalette.textPrimary
+        )
 
         navigationController.navigationBar.tintColor = StackOverflowPalette.primaryAction
         navigationController.navigationBar.standardAppearance = navigationAppearance
