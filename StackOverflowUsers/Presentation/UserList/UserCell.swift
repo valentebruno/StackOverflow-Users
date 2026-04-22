@@ -19,7 +19,7 @@ final class UserCell: UITableViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.layer.cornerRadius = 22
+        iv.layer.cornerRadius = 28
         iv.backgroundColor = StackOverflowPalette.componentAltBackground
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
@@ -27,8 +27,8 @@ final class UserCell: UITableViewCell {
 
     private let avatarContainerView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 24
-        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 32
+        view.layer.borderWidth = 3
         view.layer.borderColor = StackOverflowPalette.separator.cgColor
         view.backgroundColor = StackOverflowPalette.contentBackground
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +37,7 @@ final class UserCell: UITableViewCell {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        StackOverflowTypography.apply(.body3, weight: .regular, to: label)
+        StackOverflowTypography.apply(.body3, weight: .medium, to: label)
         label.textColor = StackOverflowPalette.textPrimary
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -46,7 +46,7 @@ final class UserCell: UITableViewCell {
 
     private let reputationLabel: UILabel = {
         let label = UILabel()
-        StackOverflowTypography.apply(.body1, weight: .regular, to: label)
+        StackOverflowTypography.apply(.body2, weight: .regular, to: label)
         label.textColor = StackOverflowPalette.textSecondary
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -179,16 +179,17 @@ final class UserCell: UITableViewCell {
     // MARK: - Layout
 
     private func updateFollowButton(isFollowed: Bool, name: String) {
-        var config: UIButton.Configuration = isFollowed ? .tinted() : .bordered()
+        var config: UIButton.Configuration = isFollowed ? .tinted() : .plain()
         config.cornerStyle = .capsule
-        config.buttonSize = .small
-        config.title = isFollowed ? "Unfollow" : "Follow"
-        config.image = UIImage(systemName: isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
-        config.imagePadding = 4
-        config.titleTextAttributesTransformer = StackOverflowTypography.buttonTextTransformer(.body1)
-        config.baseForegroundColor = isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
+        config.buttonSize = .large
+        config.title = nil
+        let symbolName = isFollowed ? "person.fill.xmark" : "person.fill.checkmark"
+        config.image = UIImage(systemName: symbolName)
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 26, weight: .regular)
+        config.imagePadding = 0
+        config.baseForegroundColor = isFollowed ? StackOverflowPalette.accent : StackOverflowPalette.primaryAction
         config.baseBackgroundColor = isFollowed
-            ? StackOverflowPalette.danger.withAlphaComponent(0.12)
+            ? StackOverflowPalette.accent.withAlphaComponent(0.12)
             : .clear
         followButton.configuration = config
         followButton.accessibilityLabel = isFollowed ? "Unfollow \(name)" : "Follow \(name)"
@@ -222,7 +223,7 @@ final class UserCell: UITableViewCell {
         let stack = UIStackView()
         stack.axis = .horizontal
         stack.alignment = .center
-        stack.spacing = 12
+        stack.spacing = 16
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -245,23 +246,23 @@ final class UserCell: UITableViewCell {
         NSLayoutConstraint.activate([
             outerStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             outerStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            outerStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor, constant: 8),
-            outerStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor, constant: -8),
+            outerStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor, constant: 12),
+            outerStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor, constant: -12),
 
-            avatarContainerView.widthAnchor.constraint(equalToConstant: 48),
-            avatarContainerView.heightAnchor.constraint(equalToConstant: 48),
+            avatarContainerView.widthAnchor.constraint(equalToConstant: 64),
+            avatarContainerView.heightAnchor.constraint(equalToConstant: 64),
 
             avatarImageView.centerXAnchor.constraint(equalTo: avatarContainerView.centerXAnchor),
             avatarImageView.centerYAnchor.constraint(equalTo: avatarContainerView.centerYAnchor),
-            avatarImageView.widthAnchor.constraint(equalToConstant: 44),
-            avatarImageView.heightAnchor.constraint(equalToConstant: 44),
+            avatarImageView.widthAnchor.constraint(equalToConstant: 56),
+            avatarImageView.heightAnchor.constraint(equalToConstant: 56),
 
             separatorView.leadingAnchor.constraint(equalTo: textStack.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale),
 
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 72)
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 88)
         ])
 
         applyContentSizeLayout(for: traitCollection)
@@ -287,7 +288,7 @@ final class UserCell: UITableViewCell {
         } else {
             outerStack.axis = .horizontal
             outerStack.alignment = .center
-            outerStack.spacing = 12
+            outerStack.spacing = 16
             trailingStack.axis = .horizontal
             nameLabel.numberOfLines = 1
         }

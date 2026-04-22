@@ -49,8 +49,8 @@ final class UserDetailViewController: UIViewController {
     private let avatarContainerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 62
-        view.layer.borderWidth = 1
-        view.layer.borderColor = StackOverflowPalette.separator.cgColor
+        view.layer.borderWidth = 3
+        view.layer.borderColor = StackOverflowPalette.accent.cgColor
         view.backgroundColor = StackOverflowPalette.contentBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -218,7 +218,7 @@ final class UserDetailViewController: UIViewController {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        avatarContainerView.layer.borderColor = StackOverflowPalette.separator.cgColor
+        avatarContainerView.layer.borderColor = StackOverflowPalette.accent.cgColor
     }
 
     private func configure() {

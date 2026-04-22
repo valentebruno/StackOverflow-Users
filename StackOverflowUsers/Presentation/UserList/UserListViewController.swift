@@ -23,7 +23,7 @@ final class UserListViewController: UIViewController {
         table.separatorStyle = .none
         table.register(UserCell.self, forCellReuseIdentifier: UserCell.reuseIdentifier)
         table.rowHeight = UITableView.automaticDimension
-        table.estimatedRowHeight = 72
+        table.estimatedRowHeight = 92
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
@@ -316,7 +316,7 @@ extension UserListViewController: UITableViewDelegate {
             done(true)
         }
         action.backgroundColor = model.isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
-        action.image = UIImage(systemName: model.isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
+        action.image = UIImage(systemName: model.isFollowed ? "person.fill.xmark" : "person.fill.checkmark")
         return UISwipeActionsConfiguration(actions: [action])
     }
 }
