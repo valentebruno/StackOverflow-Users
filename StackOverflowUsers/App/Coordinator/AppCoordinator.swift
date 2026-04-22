@@ -82,7 +82,7 @@ final class AppCoordinator: Coordinator {
         navigationAppearance.configureWithOpaqueBackground()
         navigationAppearance.backgroundColor = StackOverflowPalette.contentBackground
         navigationAppearance.titleTextAttributes = StackOverflowTypography.textAttributes(
-            .body3,
+            .subheading,
             weight: .semibold,
             color: StackOverflowPalette.textPrimary
         )

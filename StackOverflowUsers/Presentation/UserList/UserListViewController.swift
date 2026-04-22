@@ -93,26 +93,14 @@ final class UserListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Stack Overflow Users"
         view.backgroundColor = StackOverflowPalette.appBackground
-        configureTitleView()
         setupViews()
         bindViewModel()
         viewModel.load()
     }
 
     // MARK: - Setup
-
-    private func configureTitleView() {
-        let label = UILabel()
-        label.text = "Stack Overflow Users"
-        label.textColor = StackOverflowPalette.textPrimary
-        label.textAlignment = .center
-        StackOverflowTypography.apply(.headline1, weight: .semibold, to: label)
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.7
-        navigationItem.titleView = label
-        navigationItem.largeTitleDisplayMode = .never
-    }
 
     private func setupViews() {
         let staleHeight = staleBannerLabel.heightAnchor.constraint(equalToConstant: 0)

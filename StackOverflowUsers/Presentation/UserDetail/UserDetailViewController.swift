@@ -195,7 +195,7 @@ final class UserDetailViewController: UIViewController {
             scrollContentView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
             scrollContentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.frameLayoutGuide.heightAnchor),
 
-            contentStack.topAnchor.constraint(equalTo: scrollContentView.topAnchor, constant: 32),
+            contentStack.topAnchor.constraint(equalTo: scrollContentView.topAnchor, constant: 56),
             contentStack.centerXAnchor.constraint(equalTo: scrollContentView.centerXAnchor),
             contentStack.leadingAnchor.constraint(greaterThanOrEqualTo: scrollContentView.leadingAnchor, constant: 24),
             contentStack.trailingAnchor.constraint(lessThanOrEqualTo: scrollContentView.trailingAnchor, constant: -24),
