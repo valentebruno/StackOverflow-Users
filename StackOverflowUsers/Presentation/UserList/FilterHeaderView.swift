@@ -24,10 +24,17 @@ final class FilterHeaderView: UIView {
         autoresizingMask = .flexibleWidth
         addSubview(segmentedControl)
 
+        // Pin to the view itself (not layoutMarginsGuide) and lower the trailing
+        // priority — a table-header view is briefly installed with zero width, which
+        // would otherwise force UIKit to break one of the edge constraints out loud.
+        let leading  = segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)
+        let trailing = segmentedControl.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+        trailing.priority = UILayoutPriority(999)
+
         NSLayoutConstraint.activate([
             segmentedControl.centerYAnchor.constraint(equalTo: centerYAnchor),
-            segmentedControl.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: 8),
-            segmentedControl.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor, constant: -8)
+            leading,
+            trailing
         ])
 
         segmentedControl.addTarget(self, action: #selector(selectionChanged), for: .valueChanged)

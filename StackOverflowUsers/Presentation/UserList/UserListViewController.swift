@@ -97,6 +97,26 @@ final class UserListViewController: UIViewController {
         viewModel.load()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        resizeTableHeaderIfNeeded()
+    }
+
+    private func resizeTableHeaderIfNeeded() {
+        guard let header = tableView.tableHeaderView else { return }
+        let targetWidth = tableView.bounds.width
+        guard targetWidth > 0 else { return }
+        let size = header.systemLayoutSizeFitting(
+            CGSize(width: targetWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        if header.frame.size != size || header.frame.width != targetWidth {
+            header.frame = CGRect(x: 0, y: 0, width: targetWidth, height: max(size.height, 56))
+            tableView.tableHeaderView = header
+        }
+    }
+
     // MARK: - Setup
 
     private func setupViews() {

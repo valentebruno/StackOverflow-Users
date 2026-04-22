@@ -41,7 +41,9 @@ actor ImageLoader: ImageLoading {
                    !(200...299).contains(http.statusCode) {
                     return nil
                 }
-                guard let image = UIImage(data: data) else { return nil }
+                guard let image = UIImage(data: data), image.cgImage != nil else {
+                    return nil
+                }
                 return await Self.prepareForDisplay(image)
             } catch {
                 return nil
@@ -66,9 +68,17 @@ actor ImageLoader: ImageLoading {
 
     // MARK: - Helpers
 
-    private static func prepareForDisplay(_ image: UIImage) async -> UIImage {
+    private static func prepareForDisplay(_ image: UIImage) async -> UIImage? {
         await Task.detached(priority: .utility) {
-            image.preparingForDisplay() ?? image
+            // `preparingForDisplay()` returns nil when the image has an incompatible
+            // colour space or partially-decoded data (e.g. a truncated Gravatar). Do
+            // NOT fall back to the raw UIImage — drawing it later logs the CG error
+            // we're trying to prevent. Return nil so the cell uses the placeholder.
+            guard let prepared = image.preparingForDisplay(),
+                  prepared.cgImage != nil else {
+                return nil
+            }
+            return prepared
         }.value
     }
 
