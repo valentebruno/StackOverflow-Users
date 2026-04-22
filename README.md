@@ -36,9 +36,9 @@ The display name, bundle ID, API base URL, and optional Stack Apps API key flow 
 
 - Fetches the top 20 users on launch, with infinite-scroll pagination that respects the API's `has_more` flag.
 - Each row shows a circular avatar, display name, and locale-formatted reputation.
-- Follow / unfollow toggles via a button tap, a leading swipe action, or a VoiceOver custom action.
-  - **Not followed:** button shows `person.fill.checkmark` in Stack Overflow blue.
-  - **Followed:** button shows `person.fill.xmark` in orange (tinted), and the avatar ring turns orange — two distinct signals so the followed state is unmistakable.
+- - Follow / unfollow toggles via a button tap.
+  - The button reflects the available action (follow or unfollow)
+  - Followed users display a persistent visual indicator in the cell
 - A segmented control below the navigation title filters between **All** and **Followed** users, and remains visible in empty/error states so the user can switch back.
 - Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
 - The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
@@ -184,7 +184,7 @@ Given more time, I'd add a full on-device accessibility audit with the Accessibi
 
 - **Stack Exchange rate limit.** Unauthenticated requests are capped at 300/day per IP. If the API returns a `throttle_violation`, the app surfaces it via `.apiError`. To lift the limit to 10 000/day, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` and paste in a free [Stack Apps key](https://stackapps.com/apps/oauth/register).
 - **Gravatar over HTTP.** Some `profile_image` URLs are `http://` Gravatar links. ATS blocks them; the app falls back to a deterministically-coloured initials placeholder. Not adding an ATS exception — that would be a security regression for a few avatars.
-- **No CI.** No GitHub Actions workflow is committed. Tests run locally with the `xcodebuild` line above.
+- Tests run locally with the `xcodebuild` line above.
 
 ## Reviewer Guide
 
