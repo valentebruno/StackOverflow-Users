@@ -1,0 +1,13 @@
+// Copy this file to Config/Local.xcconfig to override any Shared/Development/Production
+// setting on your machine. Config/Local.xcconfig is git-ignored, so real keys never leave
+// your checkout.
+
+#include "Shared.xcconfig"
+
+// Lifts the Stack Exchange quota from 300/day per IP to 10,000/day per account.
+// Register a free key at https://stackapps.com/apps/oauth/register and paste it below.
+STACK_EXCHANGE_API_KEY =
+
+// Point Development at a different base URL (e.g. a local mock) without changing Swift.
+// Remember xcconfig treats `//` as a comment; use $() to escape: https:/$()/staging.example.com/2.2
+// APP_API_BASE_URL = https:/$()/api.stackexchange.com/2.2
