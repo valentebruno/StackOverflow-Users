@@ -6,7 +6,7 @@ Built as a take-home exercise, focused on clarity, correctness, and maintainabil
 
 ## Requirements
 
-- Xcode 15 or newer
+- Xcode 16 or newer
 - iOS 16.0 deployment target
 - Swift 5.9+
 - UIKit only
@@ -16,7 +16,7 @@ Built as a take-home exercise, focused on clarity, correctness, and maintainabil
 
 1. Open `StackOverflowUsers.xcodeproj`.
 2. Select an iOS 16+ iPhone or iPad simulator.
-3. Build and run.
+3. Build and run (`⌘R`).
 
 The project file is generated from `project.yml`; install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` to regenerate if needed.
 
@@ -36,15 +36,17 @@ The display name, bundle ID, API base URL, and optional Stack Apps API key flow 
 
 - Fetches the top 20 users on launch, with infinite-scroll pagination that respects the API's `has_more` flag.
 - Each row shows a circular avatar, display name, and locale-formatted reputation.
-- Follow / unfollow toggles from a button tap, a leading swipe action, or a VoiceOver custom action. When followed, the row shows **both** a blue checkmark indicator and a tinted "Unfollow" button (the brief asks for an indicator *and* an unfollow option, so both are present at once).
+- Follow / unfollow toggles via a button tap, a leading swipe action, or a VoiceOver custom action.
+  - **Not followed:** button shows `person.fill.checkmark` in Stack Overflow blue.
+  - **Followed:** button shows `person.fill.xmark` in orange (tinted), and the avatar ring turns orange — two distinct signals so the followed state is unmistakable.
 - A segmented control below the navigation title filters between **All** and **Followed** users, and remains visible in empty/error states so the user can switch back.
 - Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
 - The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
 - A centered Stack Overflow splash screen is built in UIKit code; there is no launch storyboard.
 - The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
 - Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
-- UIKit colors are centralized in `StackOverflowPalette`, using Stack Overflow brand stops for orange, blue, black, gray, and yellow while keeping neutral backgrounds dominant.
-- Typography is centralized in `StackOverflowTypography`, mapping the Stack Overflow type scale onto Dynamic Type-aware UIKit fonts.
+- Colors are centralized in `StackOverflowPalette`, using the official [Stack Overflow / Stacks color stops](https://stackoverflow.design/system/foundation/colors): orange-400 (#F48024) as the brand accent, blue-500 (#0077CC) as the primary action color on light mode, and the full black/gray neutral scale.
+- Typography is centralized in `StackOverflowTypography`, mapping the [Stack Overflow type scale](https://stackoverflow.design/system/foundation/typography) onto Dynamic Type-aware UIKit fonts.
 
 ## Requirement Coverage
 
@@ -54,10 +56,10 @@ Direct map from the brief to where each item lives:
 |---|---|
 | Top 20 users on launch | `UserListViewModel.load()` → `UserService.fetchTopUsers(page: 1, pageSize: 20)` |
 | Profile image, name, reputation per cell | `UserCell.configure(with:imageLoader:onFollowTapped:)` |
-| Follow option per cell | `followButton` on `UserCell` |
+| Follow option per cell | `followButton` on `UserCell` (`person.fill.checkmark` icon, blue) |
 | Follow is local only, no API call | `UserDefaultsFollowRepository` (zero networking) |
-| Follow indicator | `followedIndicator` (`checkmark.seal.fill`) |
-| Unfollow when followed | Button flips to "Unfollow Name", red tinted style; swipe + VoiceOver action also available |
+| Follow indicator | Avatar ring turns orange + button icon/tint flips to `person.fill.xmark` in accent orange |
+| Unfollow when followed | Same `followButton` shows `person.fill.xmark`; also available via leading swipe and VoiceOver custom action |
 | Persistence across launches | `UserDefaults(suiteName:)` guarded by `OSAllocatedUnfairLock` |
 | Error state with empty view | `EmptyStateView` + `AppError.userFacingMessage` |
 
@@ -151,7 +153,7 @@ Six XCUITest cases driven by a debug-only `-UITests` launch flag that swaps in a
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
   -scheme 'StackOverflowUsers' \
-  -destination 'platform=iOS Simulator,name=iPhone 16' test
+  -destination 'platform=iOS Simulator,name=iPhone 17' test
 ```
 
 The Production scheme keeps its Test action on the Development configuration so `@testable import` remains available. To verify the release-optimised app build, run:
@@ -159,7 +161,7 @@ The Production scheme keeps its Test action on the Development configuration so 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
   -scheme 'StackOverflowUsers (Production)' \
-  -destination 'platform=iOS Simulator,name=iPhone 16' build
+  -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ## Tradeoffs
