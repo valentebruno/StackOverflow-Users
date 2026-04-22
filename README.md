@@ -16,7 +16,7 @@ An iOS application that fetches and displays the top Stack Overflow users, built
 2. Select an iOS 16+ simulator.
 3. Build and run (`⌘R`).
 
-The project is generated from `project.yml` via [XcodeGen](https://github.com/yonaskolb/XcodeGen); run `xcodegen generate` to regenerate if needed. Three shared schemes are included — `StackOverflowUsers` is the default and covers all tests.
+The project is generated from `project.yml` via [XcodeGen](https://github.com/yonaskolb/XcodeGen); run `xcodegen generate` to regenerate if needed.
 
 ## What the App Does
 
@@ -47,21 +47,6 @@ MVVM with a lightweight coordinator.
 - **View models** own all state and logic; zero UIKit imports, fully unit-testable.
 - **Coordinator** owns navigation and wires dependencies at the composition root.
 - **Data layer** is protocol-backed — `UserServiceProtocol`, `FollowRepositoryProtocol`, `UserCacheProtocol`, `ImageLoading` — so every layer is mockable without a framework.
-
-```
-StackOverflowUsers/
-├── App/                      SceneDelegate, AppCoordinator
-├── Domain/                   User, StackExchangeResponse, AppError
-├── Data/
-│   ├── Network/              UserService
-│   ├── Persistence/          UserDefaultsFollowRepository, FileUserCache
-│   └── ImageLoading/         ImageLoader, InitialsImageGenerator
-├── Presentation/
-│   ├── UserList/             ViewModel, ViewController, UserCell
-│   ├── UserDetail/           ViewModel, ViewController
-│   └── Shared/               EmptyStateView
-└── Foundation/               String+HTMLEntities
-```
 
 Data flow:
 
@@ -116,6 +101,3 @@ Quickest path through the required flow:
 - `UserDefaultsFollowRepository` — follow persistence
 - `UserCell` — cell configuration and follow UI
 
----
-
-Bruno Valente

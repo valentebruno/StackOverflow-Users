@@ -14,17 +14,11 @@ final class AppCoordinator: Coordinator {
 
     func start() {
         configureAppearance()
-
-        let splashViewController = SplashViewController()
-        splashViewController.onFinish = { [weak self] in
-            self?.showUserList(animated: true)
-        }
-
-        window.rootViewController = splashViewController
+        showUserList()
         window.makeKeyAndVisible()
     }
 
-    private func showUserList(animated: Bool) {
+    private func showUserList() {
         let userService: UserServiceProtocol
         let followRepository: FollowRepositoryProtocol
         let userCache: UserCacheProtocol?
@@ -62,19 +56,7 @@ final class AppCoordinator: Coordinator {
 
         navigationController.navigationBar.prefersLargeTitles = false
         navigationController.setViewControllers([viewController], animated: false)
-
-        guard animated else {
-            window.rootViewController = navigationController
-            return
-        }
-
-        UIView.transition(
-            with: window,
-            duration: 0.2,
-            options: [.transitionCrossDissolve, .allowAnimatedContent]
-        ) {
-            self.window.rootViewController = self.navigationController
-        }
+        window.rootViewController = navigationController
     }
 
     private func configureAppearance() {
