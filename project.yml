@@ -30,6 +30,7 @@ targets:
       Production: Config/Production.xcconfig
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID_BASE)$(APP_BUNDLE_ID_SUFFIX)
         PRODUCT_NAME: StackOverflowUsers
         INFOPLIST_FILE: StackOverflowUsers/Resources/Info.plist

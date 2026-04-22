@@ -38,6 +38,7 @@ The display name, bundle ID, API base URL, and optional Stack Apps API key flow 
 - Follow / unfollow toggles from a button tap, a leading swipe action, or a VoiceOver custom action. When followed, the row shows **both** a blue checkmark indicator and a tinted "Unfollow" button (the brief asks for an indicator *and* an unfollow option, so both are present at once).
 - A segmented control in the table header filters between **All** and **Followed** users.
 - Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
+- The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
 - The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
 - Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
 
