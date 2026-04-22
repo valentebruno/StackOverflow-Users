@@ -16,8 +16,8 @@ enum AppError: Error, Equatable, Sendable {
             return "No internet connection. Check your network and try again."
         case .serverError(let code):
             return "The server returned an error (\(code)). Try again shortly."
-        case .apiError(_, let name, let message):
-            return "API error — \(name): \(message)"
+        case .apiError:
+            return "The request could not be completed. Try again later."
         case .decodingError:
             return "Couldn't read the server response."
         case .noResults:

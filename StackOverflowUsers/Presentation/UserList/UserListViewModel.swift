@@ -126,8 +126,10 @@ final class UserListViewModel {
                 self.currentPage = nextPage
                 self.hasMorePages = page.hasMore
                 self.emitDataState(followedIDs: followed)
-            } catch {
+            } catch is CancellationError {
                 return
+            } catch {
+                self.hasMorePages = false
             }
         }
     }

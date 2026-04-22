@@ -45,7 +45,7 @@ final class AppCoordinator: Coordinator {
         userCache        = FileUserCache()
         #endif
 
-        let imageLoader = ImageLoader.shared
+        let imageLoader = ImageLoader()
 
         let viewModel = UserListViewModel(
             userService: userService,
