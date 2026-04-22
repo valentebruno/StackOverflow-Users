@@ -13,6 +13,16 @@ final class AppCoordinator: Coordinator {
     }
 
     func start() {
+        let splashViewController = SplashViewController()
+        splashViewController.onFinish = { [weak self] in
+            self?.showUserList(animated: true)
+        }
+
+        window.rootViewController = splashViewController
+        window.makeKeyAndVisible()
+    }
+
+    private func showUserList(animated: Bool) {
         let userService: UserServiceProtocol
         let followRepository: FollowRepositoryProtocol
         let userCache: UserCacheProtocol?
@@ -51,8 +61,18 @@ final class AppCoordinator: Coordinator {
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.setViewControllers([viewController], animated: false)
 
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
+        guard animated else {
+            window.rootViewController = navigationController
+            return
+        }
+
+        UIView.transition(
+            with: window,
+            duration: 0.2,
+            options: [.transitionCrossDissolve, .allowAnimatedContent]
+        ) {
+            self.window.rootViewController = self.navigationController
+        }
     }
 
     // MARK: - Navigation

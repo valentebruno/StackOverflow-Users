@@ -40,7 +40,7 @@ The display name, bundle ID, API base URL, and optional Stack Apps API key flow 
 - A segmented control below the navigation title filters between **All** and **Followed** users, and remains visible in empty/error states so the user can switch back.
 - Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
 - The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
-- A centered Stack Overflow launch screen is provided via `LaunchScreen.storyboard`.
+- A centered Stack Overflow splash screen is built in UIKit code; there is no launch storyboard.
 - The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
 - Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
 
