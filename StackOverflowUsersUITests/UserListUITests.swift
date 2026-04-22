@@ -121,6 +121,34 @@ final class UserListUITests: XCTestCase {
         XCTAssertTrue(openProfile.isHittable)
     }
 
+    // MARK: - Landscape
+
+    func test_landscape_listRendersAndFollowWorks() {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+
+        app.launch()
+
+        let cell = app.cells["user-cell-101"]
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        XCTAssertTrue(cell.staticTexts["Jon Skeet"].exists)
+
+        cell.buttons["Follow Jon Skeet"].tap()
+        XCTAssertTrue(cell.buttons["Unfollow Jon Skeet"].waitForExistence(timeout: 2))
+    }
+
+    func test_landscape_errorStateIsVisible() {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+
+        app.launchArguments = ["-UITests", "-UITests-FailNetwork"]
+        app.launch()
+
+        let emptyTitle = app.staticTexts["empty-state-title"]
+        XCTAssertTrue(emptyTitle.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Try Again"].exists)
+    }
+
     // MARK: - Helpers
 
     private func selectFollowedFilter() {
