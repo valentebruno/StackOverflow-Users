@@ -320,3 +320,4 @@ extension UserListViewController: UITableViewDelegate {
         return UISwipeActionsConfiguration(actions: [action])
     }
 }
+

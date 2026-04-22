@@ -1,8 +1,8 @@
 # Stack Overflow Users
 
-An iOS app that fetches and displays the top Stack Overflow users, with local follow state, offline fallback, and a testable UIKit architecture.
+An iOS application that fetches and displays the top Stack Overflow users.
 
-Built as a take-home exercise, focused on clarity, correctness, and maintainability within a reasonable scope.
+Focused on clean architecture, testability, and predictable state handling within a scope aligned with the original exercise.
 
 ## Requirements
 
@@ -15,81 +15,49 @@ Built as a take-home exercise, focused on clarity, correctness, and maintainabil
 ## Running the App
 
 1. Open `StackOverflowUsers.xcodeproj`.
-2. Select an iOS 16+ iPhone or iPad simulator.
+2. Select an iOS 16+ simulator.
 3. Build and run (`⌘R`).
 
-The project file is generated from `project.yml`; install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` to regenerate if needed.
+The project is generated from `project.yml` via [XcodeGen](https://github.com/yonaskolb/XcodeGen); run `xcodegen generate` to regenerate if needed. Three shared schemes are included — `StackOverflowUsers` is the default and covers all tests.
 
-## Schemes
+## Core Functionality
 
-Three shared schemes ship with the project. `StackOverflowUsers` is the default reviewer-friendly scheme; the suffixed schemes expose the environment-specific run/archive settings.
-
-| Scheme | Run/archive configuration | Test configuration | Bundle ID | Display name |
-|---|---|---|---|---|
-| `StackOverflowUsers` | `Development` | `Development` | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
-| `StackOverflowUsers (Development)` | `Development` | `Development` | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
-| `StackOverflowUsers (Production)` | `Production` | `Development` | `com.brunovalente.StackOverflowUsers` | `Stack Users` |
-
-The display name, bundle ID, API base URL, and optional Stack Apps API key flow through the xcconfig files into `Info.plist`. `Development.xcconfig` and `Production.xcconfig` optionally include `Config/Local.xcconfig`, which is git-ignored so a personal API key never ends up in the repo — `Config/Local.xcconfig.example` shows the shape.
-
-## What It Does
-
-- Fetches the top 20 users on launch, with infinite-scroll pagination that respects the API's `has_more` flag.
-- Each row shows a circular avatar, display name, and locale-formatted reputation.
-- - Follow / unfollow toggles via a button tap.
-  - The button reflects the available action (follow or unfollow)
-  - Followed users display a persistent visual indicator in the cell
-- A segmented control below the navigation title filters between **All** and **Followed** users, and remains visible in empty/error states so the user can switch back.
-- Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
-- The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
-- A centered Stack Overflow splash screen is built in UIKit code; there is no launch storyboard.
-- The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
-- Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
-- Colors are centralized in `StackOverflowPalette`, using the official [Stack Overflow / Stacks color stops](https://stackoverflow.design/system/foundation/colors): orange-400 (#F48024) as the brand accent, blue-500 (#0077CC) as the primary action color on light mode, and the full black/gray neutral scale.
-- Typography is centralized in `StackOverflowTypography`, mapping the [Stack Overflow type scale](https://stackoverflow.design/system/foundation/typography) onto Dynamic Type-aware UIKit fonts.
+- Fetches the top 20 Stack Overflow users on launch.
+- Each row shows a profile image, display name, and formatted reputation.
+- Follow / unfollow users locally — no API call is made. Followed users show a tinted avatar ring and a distinct unfollow button simultaneously. VoiceOver labels and custom actions are supported.
+- Follow state persists between sessions.
+- Network failure shows a clear error state with a retry action; cached data is shown where available.
 
 ## Requirement Coverage
 
-Direct map from the brief to where each item lives:
-
-| Brief requirement | Where in the code |
+| Brief requirement | Implementation |
 |---|---|
-| Top 20 users on launch | `UserListViewModel.load()` → `UserService.fetchTopUsers(page: 1, pageSize: 20)` |
-| Profile image, name, reputation per cell | `UserCell.configure(with:imageLoader:onFollowTapped:)` |
-| Follow option per cell | `followButton` on `UserCell` (`person.fill.checkmark` icon, blue) |
-| Follow is local only, no API call | `UserDefaultsFollowRepository` (zero networking) |
-| Follow indicator | Avatar ring turns orange + button icon/tint flips to `person.fill.xmark` in accent orange |
-| Unfollow when followed | Same `followButton` shows `person.fill.xmark`; also available via leading swipe and VoiceOver custom action |
-| Persistence across launches | `UserDefaults(suiteName:)` guarded by `OSAllocatedUnfairLock` |
-| Error state with empty view | `EmptyStateView` + `AppError.userFacingMessage` |
-
-## Error Handling — Three Distinct States
-
-A single generic "something went wrong" would have passed the letter of the requirement, but the reviewer's spirit-of-the-brief question is usually *"does the app degrade intelligently?"*. So:
-
-1. **`.stale(models, error)`** — we have disk cache, the network just failed. Shows the cached rows behind an orange "Showing saved users" banner; no retry dialog.
-2. **`.failed(error, stale: [])`** — no in-memory rows, no cache. Full-screen `EmptyStateView` with a typed error message and a "Try Again" button.
-3. **`.failed(error, stale: [rows])`** — we had rows in memory when the refresh failed. List stays on-screen, a retry alert appears over it.
-
-`AppError` maps `URLError` / non-2xx HTTP / API error body / decoding failures to distinct user-facing strings, so each mode reads differently.
+| Top 20 users on launch | `UserListViewModel.load()` → `UserService.fetchTopUsers(page:1, pageSize:20)` |
+| Profile image, name, reputation | `UserCell.configure(with:imageLoader:onFollowTapped:)` |
+| Follow option per cell | `followButton` on `UserCell` |
+| Follow is local only | `UserDefaultsFollowRepository` (zero networking) |
+| Follow indicator | Avatar ring tint + button tint flip |
+| Unfollow when followed | Same button; also via leading swipe and VoiceOver action |
+| Persistence across launches | `UserDefaults` keyed by `user_id` |
+| Error state with message | `EmptyStateView` + `AppError.userFacingMessage` |
 
 ## Architecture
 
 MVVM with a lightweight coordinator.
 
-- `AppCoordinator` owns navigation.
-- View controllers render state and forward intents; no business logic.
-- View models hold all state and logic; **zero UIKit imports**.
-- Data layer is protocol-backed: `UserServiceProtocol`, `FollowRepositoryProtocol`, `UserCacheProtocol`, `ImageLoading`. Makes every layer mockable without a framework.
+- **View controllers** render state and forward user intents; no business logic.
+- **View models** own all state and logic; zero UIKit imports, fully unit-testable.
+- **Coordinator** owns navigation and wires dependencies at the composition root.
+- **Data layer** is protocol-backed — `UserServiceProtocol`, `FollowRepositoryProtocol`, `UserCacheProtocol`, `ImageLoading` — so every layer is mockable without a framework.
 
 ```
 StackOverflowUsers/
 ├── App/                      SceneDelegate, AppCoordinator
-├── Domain/                   User, StackExchangeResponse, AppError (pure values)
+├── Domain/                   User, StackExchangeResponse, AppError
 ├── Data/
 │   ├── Network/              UserService
 │   ├── Persistence/          UserDefaultsFollowRepository, FileUserCache
-│   └── ImageLoading/         ImageLoader (actor), InitialsImageGenerator
+│   └── ImageLoading/         ImageLoader, InitialsImageGenerator
 ├── Presentation/
 │   ├── UserList/             ViewModel, ViewController, UserCell, FilterHeaderView
 │   ├── UserDetail/           ViewModel, ViewController, BadgePillView
@@ -97,104 +65,65 @@ StackOverflowUsers/
 └── Foundation/               String+HTMLEntities
 ```
 
+Data flow:
+
+```
+ViewController → ViewModel → Repository / Service → API / Local Storage
+```
+
 ## Technical Decisions
 
-- **MVVM-C** picked to keep view models free of UIKit; alternatives (MVC, VIPER, TCA) were either too light or too heavy for the scope. TCA / any third-party was also ruled out by the brief.
-- **Closure bindings** over Combine — fewer moving parts for a one-to-two-screen app; easy to port later.
-- **`UserDefaults` for follow state** — the payload is `Set<Int>`; Core Data would be disproportionate. `FollowRepositoryProtocol` means swapping it later is a one-file change.
-- **`FileUserCache`** writes the last successful list to disk as JSON. On network failure with no in-memory rows, the view model loads from disk and emits `.stale(models, error)` so the UI can show cached content behind a banner.
-- **`ImageLoader` is an `actor`** — cache reads, writes, and in-flight request deduplication all happen inside the actor, so no locks or GCD queues in the image path. Bitmaps come back pre-rendered via `UIImage.preparingForDisplay()`.
-- **Diffable data source keyed by `user_id`** — follow toggles update the single row via `snapshot.reconfigureItems(_:)`; avoids the full-list animation you'd get if `isFollowed` were part of the item hash.
-- **`@MainActor`** on `UserListViewController`, `UserCell`, and the cell's image-load `Task` — guarantees UI mutations stay on the main thread and survives Thread Sanitizer clean.
-- **Warnings treated as errors** (`SWIFT_TREAT_WARNINGS_AS_ERRORS = YES`, `GCC_TREAT_WARNINGS_AS_ERRORS = YES`, plus aggressive `CLANG_WARN_*` flags) in both configurations.
+- **MVVM + Coordinator** — keeps view controllers thin, view models testable, and navigation separate. Avoids the Massive ViewController pattern without requiring VIPER or a third-party architecture framework.
+- **Protocol-backed data layer** — every dependency is injected via a protocol; no singletons. Enables mocking without a test framework.
+- **`UserDefaults` for follow state** — the payload is `Set<Int>`; Core Data would be disproportionate. `FollowRepositoryProtocol` makes swapping it a one-file change.
+- **Disk cache for offline fallback** — `FileUserCache` stores the last successful response as JSON. On launch without a network, users see cached content rather than a blank screen.
+- **`ImageLoader` actor** — cache reads, writes, and in-flight deduplication are isolated inside the actor; no manual locking needed at call sites.
+- **Diffable data source** — follow toggles update only the affected row; avoids full-list reloads on state change.
 
-## API Schema Notes
+## Error Handling
 
-The brief's schema doesn't match the live API in several places. The implementation deviates deliberately, and the deviations are worth calling out because they're exactly what a "read the API critically" reviewer looks for:
+Three distinct failure states, each with a different UI response:
 
-- **HTTPS, not HTTP.** The brief's example URL is `http://api.stackexchange.com/...`. iOS App Transport Security blocks plain HTTP; I used `https://` everywhere and added no `NSAllowsArbitraryLoads` exception (that would be a security regression).
-- **Response envelope.** Stack Exchange wraps every payload in `{ items, has_more, quota_max, quota_remaining }`, with `error_id / error_name / error_message` appearing on API errors (often returned with HTTP 200). I decode `StackExchangeResponse<User>` first and check `wrapper.isAPIError` before reading `items`, so a throttle violation surfaces as `.apiError`, not a silent empty list.
-- **`badge_counts.bronze` / `silver`.** Brief lists them as `String`; live API returns integers. Modelled as `Int?`. Decoding as `String` would have failed every user.
-- **`accept_rate`.** Brief lists it as non-optional `Int`; actually absent on bot accounts and users who've never accepted an answer. Typed as `Int?` so one missing field can't nuke the whole response.
-- **`link`.** Brief lists it as non-optional `String`; a single malformed URL would nuke the 19 other valid users if decoded strictly. Typed as `URL?` and treated as optional at the UI layer.
-- **HTML entities.** `display_name` and `location` can arrive HTML-escaped (`Cura&#231;ao`, `Salvad&#243;`). Decoded once at the network boundary via `String.decodingHTMLEntities`, so the view model and cell never see raw entities.
+1. **Stale cache** — network failed but disk cache is available. Cached rows are shown with a banner indicating data may be out of date.
+2. **Hard failure, no cache** — full-screen error view with a message and a "Try Again" button.
+3. **Refresh failure over existing content** — current list stays visible; an alert offers a retry.
 
 ## Testing
 
-All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass injected into `URLSessionConfiguration.ephemeral`; persistence uses ephemeral `UserDefaults(suiteName: UUID().uuidString)` suites and temp-directory cache files.
+All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass; persistence uses ephemeral `UserDefaults` suites and temp-directory cache files.
 
-### Unit tests (`StackOverflowUsersTests`)
+**Unit tests** cover decoding, networking, image loading, follow repository, file cache, list view model state transitions and filters, detail view model, cell formatting, error copy, and initials generation.
 
-- **Decoding** — success wrapper, API-error wrapper, empty items, malformed JSON, integer badge counts, missing `accept_rate`, HTML entity decoding.
-- **Networking** — HTTPS URL assembly with the expected query items, page / pageSize parameters, 2xx / 5xx, API-error body at HTTP 200, malformed body, empty items, transport failure.
-- **Image loader** — success path, HTTP error, transport error, cache hit, in-flight deduplication.
-- **Follow repository** — follow / unfollow / toggle, persistence across re-instantiation, 100-way concurrent writes, ephemeral suite isolation.
-- **File user cache** — round-trip save/load, missing-file nil, overwrite, clear.
-- **List view model** — loading → loaded transitions, every error shape, stale preservation, cache fallback, initial followed state, follow toggling, All/Followed filter (including the empty variant), pagination append / has-more stop / filter guard.
-- **Detail view model** — reputation formatting, whitespace-trimmed location, nil-vs-zero badge counts, accept-rate suffix, profile-URL pass-through.
-- **Cell model** — locale-aware thousands separator, small numbers unseparated, always ends with `" rep"`.
-- **State presenter** — empty titles and error titles are distinct, non-empty, and free of technical jargon.
-- **App error** — each case produces a distinct user-facing message; status codes and API names are included where relevant.
-- **Initials generator** — deterministic PNG output for the same name, different names produce different colours, empty/whitespace input falls back safely.
-
-### End-to-end UI tests (`StackOverflowUsersUITests`)
-
-Six XCUITest cases driven by a debug-only `-UITests` launch flag that swaps in a stub service and an ephemeral follow store:
-
-- Launch renders the top users.
-- Launch with a simulated network failure renders the offline empty state and retry action.
-- Tapping follow flips the composed accessibility label and shows the "Unfollow" button.
-- Followed filter shows the "No followed users yet" empty state when nothing is followed, then switches back to All.
-- Follow-then-filter shows only the followed user.
-- Tapping a row pushes the detail with an Open-profile button.
-
-### Running them
+**UI tests** (six XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, and detail navigation — driven by a debug launch flag that injects a stub service.
 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
   -scheme 'StackOverflowUsers' \
-  -destination 'platform=iOS Simulator,name=iPhone 17' test
-```
-
-The Production scheme keeps its Test action on the Development configuration so `@testable import` remains available. To verify the release-optimised app build, run:
-
-```bash
-xcodebuild -project StackOverflowUsers.xcodeproj \
-  -scheme 'StackOverflowUsers (Production)' \
-  -destination 'platform=iOS Simulator,name=iPhone 17' build
+  -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
 
 ## Tradeoffs
 
-I prioritised:
+Prioritised correctness, clean separation, and testability for the core requirements. A few lightweight additions — offline cache, a detail screen, pull-to-refresh, segmented filter, and accessibility support — were included where they improved resilience or usability without adding architectural complexity or third-party dependencies.
 
-- Clean separation between networking, persistence, presentation, and domain.
-- Testable view models and protocol-backed data layer.
-- Graceful degradation — stale cache, typed errors, retry UX.
+Deliberately avoided: generic HTTP interceptor chains, Core Data for a simple key-value follow store, and snapshot tests (acceptable tradeoff at this scope).
 
-I deliberately avoided:
+## Notes
 
-- A generic HTTP client or interceptor chain.
-- Core Data or any heavier persistence stack for a `Set<Int>` follow store.
-- Third-party libraries of any kind, including mocking frameworks in the test target.
-
-Given more time, I'd add a full on-device accessibility audit with the Accessibility Inspector at the largest accessibility sizes, a persistent image cache (memory-only today), and snapshot tests for the cell layout at Dynamic Type extremes.
-
-## Notes for the Reviewer
-
-- **Stack Exchange rate limit.** Unauthenticated requests are capped at 300/day per IP. If the API returns a `throttle_violation`, the app surfaces it via `.apiError`. To lift the limit to 10 000/day, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` and paste in a free [Stack Apps key](https://stackapps.com/apps/oauth/register).
-- **Gravatar over HTTP.** Some `profile_image` URLs are `http://` Gravatar links. ATS blocks them; the app falls back to a deterministically-coloured initials placeholder. Not adding an ATS exception — that would be a security regression for a few avatars.
-- Tests run locally with the `xcodebuild` line above.
+- The Stack Exchange API requires HTTPS; no `NSAllowsArbitraryLoads` exception is added.
+- Some API fields listed in the brief schema are optional or typed differently in the live API; the implementation handles these defensively (optional `accept_rate`, integer badge counts, HTML-escaped display names).
+- Gravatar URLs may use `http://`; these fall back to a deterministically-coloured initials placeholder rather than adding an ATS exception.
+- Unauthenticated requests are capped at 300/day per IP. Copy `Config/Local.xcconfig.example` → `Config/Local.xcconfig` and add a free [Stack Apps key](https://stackapps.com/apps/oauth/register) to raise the limit.
 
 ## Reviewer Guide
 
 Quickest path through the code:
 
-- `UserListViewModel` — state machine and intents
+- `UserListViewModel` — state machine and user intents
 - `UserService` — URL assembly, decoding, error mapping
-- `FollowRepository` + `FileUserCache` — persistence and offline fallback
-- `ImageLoader` — actor-based image cache with in-flight dedup
-- `UserDetailViewModel` + `BadgePillView` — detail-screen value formatting
+- `UserDefaultsFollowRepository` + `FileUserCache` — persistence and offline fallback
+- `ImageLoader` — actor-based image cache
+- `UserDetailViewModel` + `BadgePillView` — detail screen
 
 ---
 

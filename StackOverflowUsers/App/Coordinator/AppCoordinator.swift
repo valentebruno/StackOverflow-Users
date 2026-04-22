@@ -107,6 +107,8 @@ final class AppCoordinator: Coordinator {
             imageLoader: imageLoader,
             urlOpener: { url in UIApplication.shared.open(url) }
         )
-        navigationController.pushViewController(detailVC, animated: true)
+        let animated = !UIAccessibility.isReduceMotionEnabled
+        navigationController.pushViewController(detailVC, animated: animated)
     }
 }
+

@@ -71,7 +71,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		045FF673C5A7ED735D6CA21D /* StackOverflowUsers.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = StackOverflowUsers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		045FF673C5A7ED735D6CA21D /* StackOverflowUsers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StackOverflowUsers.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		064987EF8829131DC1F4E39D /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		0D16649A311B26C99B1E2346 /* StackOverflowUsersTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = StackOverflowUsersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D3802ABF99F2CB18D07BABF /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -792,6 +792,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = TYSB536CZG;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = StackOverflowUsers/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

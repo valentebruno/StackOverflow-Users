@@ -188,7 +188,7 @@ final class UserCell: UITableViewCell {
         config.cornerStyle = .capsule
         config.buttonSize = .large
         config.title = nil
-        let symbolName = isFollowed ? "person.fill.checkmark" : "person.fill.xmark"
+        let symbolName = isFollowed ? "person.fill.xmark" : "person.fill.checkmark"
         config.image = UIImage(systemName: symbolName)
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 26, weight: .regular)
         config.imagePadding = 0
