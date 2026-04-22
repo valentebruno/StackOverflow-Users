@@ -316,7 +316,7 @@ extension UserListViewController: UITableViewDelegate {
             done(true)
         }
         action.backgroundColor = model.isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
-        action.image = UIImage(systemName: model.isFollowed ? "person.fill.xmark" : "person.fill.checkmark")
+        action.image = UIImage(systemName: model.isFollowed ? "person.fill.checkmark" : "person.fill.xmark")
         return UISwipeActionsConfiguration(actions: [action])
     }
 }

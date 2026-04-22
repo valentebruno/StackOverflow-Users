@@ -13,6 +13,11 @@ final class UserCell: UITableViewCell {
     private var onFollowTapped: (() -> Void)?
     private var lastConfiguredModel: UserCellModel?
 
+    // Adaptive layout constraints updated per idiom
+    private var avatarContainerSize: NSLayoutConstraint?
+    private var avatarImageSize: (width: NSLayoutConstraint, height: NSLayoutConstraint)?
+    private var minHeightConstraint: NSLayoutConstraint?
+
     // MARK: - Subviews
 
     private let avatarImageView: UIImageView = {
@@ -183,7 +188,7 @@ final class UserCell: UITableViewCell {
         config.cornerStyle = .capsule
         config.buttonSize = .large
         config.title = nil
-        let symbolName = isFollowed ? "person.fill.xmark" : "person.fill.checkmark"
+        let symbolName = isFollowed ? "person.fill.checkmark" : "person.fill.xmark"
         config.image = UIImage(systemName: symbolName)
         config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 26, weight: .regular)
         config.imagePadding = 0
@@ -249,23 +254,28 @@ final class UserCell: UITableViewCell {
             outerStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor, constant: 12),
             outerStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor, constant: -12),
 
-            avatarContainerView.widthAnchor.constraint(equalToConstant: 64),
-            avatarContainerView.heightAnchor.constraint(equalToConstant: 64),
-
-            avatarImageView.centerXAnchor.constraint(equalTo: avatarContainerView.centerXAnchor),
-            avatarImageView.centerYAnchor.constraint(equalTo: avatarContainerView.centerYAnchor),
-            avatarImageView.widthAnchor.constraint(equalToConstant: 56),
-            avatarImageView.heightAnchor.constraint(equalToConstant: 56),
-
             separatorView.leadingAnchor.constraint(equalTo: textStack.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1 / UIScreen.main.scale),
 
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 88)
+            avatarImageView.centerXAnchor.constraint(equalTo: avatarContainerView.centerXAnchor),
+            avatarImageView.centerYAnchor.constraint(equalTo: avatarContainerView.centerYAnchor)
         ])
 
+        // Stored so we can update them when the idiom is known
+        let containerSize = avatarContainerView.widthAnchor.constraint(equalToConstant: 64)
+        avatarContainerView.heightAnchor.constraint(equalTo: avatarContainerView.widthAnchor).isActive = true
+        let imgW = avatarImageView.widthAnchor.constraint(equalToConstant: 56)
+        let imgH = avatarImageView.heightAnchor.constraint(equalToConstant: 56)
+        let minH = contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 88)
+        NSLayoutConstraint.activate([containerSize, imgW, imgH, minH])
+        avatarContainerSize = containerSize
+        avatarImageSize = (imgW, imgH)
+        minHeightConstraint = minH
+
         applyContentSizeLayout(for: traitCollection)
+        applyIdiomLayout(for: traitCollection)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -276,6 +286,37 @@ final class UserCell: UITableViewCell {
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
             applyContentSizeLayout(for: traitCollection)
         }
+        if traitCollection.userInterfaceIdiom != previousTraitCollection?.userInterfaceIdiom {
+            applyIdiomLayout(for: traitCollection)
+        }
+    }
+
+    private func applyIdiomLayout(for traits: UITraitCollection) {
+        let isPad = traits.userInterfaceIdiom == .pad
+
+        let containerPt: CGFloat = isPad ? 80 : 64
+        let imagePt: CGFloat     = isPad ? 72 : 56
+        let minH: CGFloat        = isPad ? 112 : 88
+        let iconPt: CGFloat      = isPad ? 30 : 26
+        let spacing: CGFloat     = isPad ? 20 : 16
+
+        avatarContainerView.layer.cornerRadius = containerPt / 2
+        avatarImageView.layer.cornerRadius     = imagePt / 2
+
+        avatarContainerSize?.constant       = containerPt
+        avatarImageSize?.width.constant     = imagePt
+        avatarImageSize?.height.constant    = imagePt
+        minHeightConstraint?.constant       = minH
+        outerStack.spacing                  = spacing
+
+        StackOverflowTypography.apply(isPad ? .subheading : .body3,    weight: .medium,  to: nameLabel)
+        StackOverflowTypography.apply(isPad ? .body3      : .body2,    weight: .regular, to: reputationLabel)
+
+        var config = followButton.configuration ?? UIButton.Configuration.plain()
+        config.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(
+            pointSize: iconPt, weight: .regular
+        )
+        followButton.configuration = config
     }
 
     private func applyContentSizeLayout(for traits: UITraitCollection) {

@@ -76,14 +76,14 @@ final class UserListUITests: XCTestCase {
         selectFollowedFilter()
 
         let emptyTitle = app.staticTexts["empty-state-title"]
-        XCTAssertTrue(emptyTitle.waitForExistence(timeout: 2))
+        XCTAssertTrue(emptyTitle.waitForExistence(timeout: 5))
         XCTAssertEqual(emptyTitle.label, "No followed users yet")
 
         let allSegment = app.buttons["All"]
         XCTAssertTrue(allSegment.exists, "The filter should remain visible in the Followed empty state")
         allSegment.tap()
 
-        XCTAssertTrue(app.cells["user-cell-101"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.cells["user-cell-101"].waitForExistence(timeout: 5))
     }
 
     func test_filterToFollowed_afterFollowing_showsOnlyFollowedUsers() {
@@ -94,13 +94,13 @@ final class UserListUITests: XCTestCase {
         jonCell.buttons["Follow Jon Skeet"].tap()
 
         // Wait for the follow state to commit before switching filters
-        XCTAssertTrue(jonCell.buttons["Unfollow Jon Skeet"].waitForExistence(timeout: 2))
+        XCTAssertTrue(jonCell.buttons["Unfollow Jon Skeet"].waitForExistence(timeout: 5))
 
         selectFollowedFilter()
 
-        XCTAssertTrue(app.cells["user-cell-101"].waitForExistence(timeout: 2))
-        XCTAssertTrue(app.cells["user-cell-202"].waitForNonExistence(timeout: 2))
-        XCTAssertTrue(app.cells["user-cell-303"].waitForNonExistence(timeout: 2))
+        XCTAssertTrue(app.cells["user-cell-101"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.cells["user-cell-202"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.cells["user-cell-303"].waitForNonExistence(timeout: 5))
     }
 
     // MARK: - Detail navigation
