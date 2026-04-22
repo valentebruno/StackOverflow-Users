@@ -94,12 +94,18 @@ All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass;
 
 **Unit tests** cover decoding, networking, image loading, follow repository, file cache, list view model state transitions and filters, detail view model, cell formatting, error copy, and initials generation.
 
-**UI tests** (six XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, and detail navigation — driven by a debug launch flag that injects a stub service.
+**UI tests** (six XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, and detail navigation — driven by a debug launch flag that injects a stub service. Tests pass on both iPhone and iPad simulators.
 
 ```bash
+# iPhone
 xcodebuild -project StackOverflowUsers.xcodeproj \
   -scheme 'StackOverflowUsers' \
-  -destination 'platform=iOS Simulator,name=iPhone 16' test
+  -destination 'platform=iOS Simulator,name=iPhone 17' test
+
+# iPad
+xcodebuild -project StackOverflowUsers.xcodeproj \
+  -scheme 'StackOverflowUsers' \
+  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' test
 ```
 
 ## Tradeoffs
