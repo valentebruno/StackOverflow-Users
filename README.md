@@ -135,9 +135,10 @@ All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass 
 
 ### End-to-end UI tests (`StackOverflowUsersUITests`)
 
-Five XCUITest cases driven by a debug-only `-UITests` launch flag that swaps in a stub service and an ephemeral follow store:
+Six XCUITest cases driven by a debug-only `-UITests` launch flag that swaps in a stub service and an ephemeral follow store:
 
 - Launch renders the top users.
+- Launch with a simulated network failure renders the offline empty state and retry action.
 - Tapping follow flips the composed accessibility label and shows the "Unfollow" button.
 - Followed filter shows the "No followed users yet" empty state when nothing is followed, then switches back to All.
 - Follow-then-filter shows only the followed user.

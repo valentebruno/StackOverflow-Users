@@ -7,6 +7,7 @@ import Foundation
 enum UITestingHooks {
 
     static let launchFlag = "-UITests"
+    private static let failureFlag = "-UITests-FailNetwork"
 
     static var isRunning: Bool {
         CommandLine.arguments.contains(launchFlag)
@@ -15,7 +16,9 @@ enum UITestingHooks {
     // MARK: - Stub user service
 
     static func makeUserService() -> UserServiceProtocol {
-        StubUserService()
+        StubUserService(
+            shouldFail: CommandLine.arguments.contains(failureFlag)
+        )
     }
 
     static func makeFollowRepository() -> FollowRepositoryProtocol {
@@ -34,7 +37,16 @@ enum UITestingHooks {
 
 private final class StubUserService: UserServiceProtocol, @unchecked Sendable {
 
+    private let shouldFail: Bool
+
+    init(shouldFail: Bool = false) {
+        self.shouldFail = shouldFail
+    }
+
     func fetchTopUsers(page: Int, pageSize: Int) async throws -> UserPage {
+        if shouldFail {
+            throw AppError.networkUnavailable
+        }
         let users = Self.fixture
         return UserPage(users: users, hasMore: false)
     }

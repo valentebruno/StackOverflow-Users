@@ -33,6 +33,17 @@ final class UserListUITests: XCTestCase {
         XCTAssertTrue(jon.staticTexts["Jon Skeet"].exists)
     }
 
+    func test_launch_whenServerUnavailable_showsErrorEmptyState() {
+        app.launchArguments = ["-UITests", "-UITests-FailNetwork"]
+        app.launch()
+
+        let emptyTitle = app.staticTexts["empty-state-title"]
+        XCTAssertTrue(emptyTitle.waitForExistence(timeout: 5))
+        XCTAssertEqual(emptyTitle.label, "You're offline")
+        XCTAssertTrue(app.buttons["Try Again"].exists)
+        XCTAssertFalse(app.cells["user-cell-101"].exists)
+    }
+
     // MARK: - Follow toggle
 
     func test_tappingFollow_showsUnfollowStateAndIndicator() {

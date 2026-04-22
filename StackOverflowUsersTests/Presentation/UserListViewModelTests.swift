@@ -189,6 +189,20 @@ final class UserListViewModelTests: XCTestCase {
         }
     }
 
+    func test_toggleFollow_doesNotRefetchUsers() async {
+        userService.outcome = .success([.fixture(userId: 1)])
+        let loadRecorder = makeRecorder(expecting: 2)
+        viewModel.load()
+        _ = await loadRecorder.wait()
+
+        let callsBeforeToggle = userService.fetchCallCount
+        let toggleRecorder = makeRecorder(expecting: 1)
+        viewModel.toggleFollow(userID: 1)
+        _ = await toggleRecorder.wait()
+
+        XCTAssertEqual(userService.fetchCallCount, callsBeforeToggle)
+    }
+
     // MARK: - Pagination
 
     func test_loadNextPage_appendsUsersAndStopsWhenHasMoreIsFalse() async {
