@@ -1,8 +1,6 @@
 # Stack Overflow Users
 
-An iOS application that fetches and displays the top Stack Overflow users.
-
-Focused on clean architecture, testability, and predictable state handling within a scope aligned with the original exercise.
+An iOS application that fetches and displays the top Stack Overflow users, built with a testable MVVM architecture in UIKit.
 
 ## Requirements
 
@@ -20,13 +18,13 @@ Focused on clean architecture, testability, and predictable state handling withi
 
 The project is generated from `project.yml` via [XcodeGen](https://github.com/yonaskolb/XcodeGen); run `xcodegen generate` to regenerate if needed. Three shared schemes are included — `StackOverflowUsers` is the default and covers all tests.
 
-## Core Functionality
+## What the App Does
 
 - Fetches the top 20 Stack Overflow users on launch.
 - Each row shows a profile image, display name, and formatted reputation.
-- Follow / unfollow users locally — no API call is made. Followed users show a tinted avatar ring and a distinct unfollow button simultaneously. VoiceOver labels and custom actions are supported.
+- Follow / unfollow any user locally — no API call is made. Followed users show a visual indicator and the button changes to offer an unfollow action; VoiceOver labels and custom actions are supported.
 - Follow state persists between sessions.
-- Network failure shows a clear error state with a retry action; cached data is shown where available.
+- When the network is unavailable, the app shows a clear error message with a retry button.
 
 ## Requirement Coverage
 
@@ -59,8 +57,8 @@ StackOverflowUsers/
 │   ├── Persistence/          UserDefaultsFollowRepository, FileUserCache
 │   └── ImageLoading/         ImageLoader, InitialsImageGenerator
 ├── Presentation/
-│   ├── UserList/             ViewModel, ViewController, UserCell, FilterHeaderView
-│   ├── UserDetail/           ViewModel, ViewController, BadgePillView
+│   ├── UserList/             ViewModel, ViewController, UserCell
+│   ├── UserDetail/           ViewModel, ViewController
 │   └── Shared/               EmptyStateView
 └── Foundation/               String+HTMLEntities
 ```
@@ -73,20 +71,10 @@ ViewController → ViewModel → Repository / Service → API / Local Storage
 
 ## Technical Decisions
 
-- **MVVM + Coordinator** — keeps view controllers thin, view models testable, and navigation separate. Avoids the Massive ViewController pattern without requiring VIPER or a third-party architecture framework.
-- **Protocol-backed data layer** — every dependency is injected via a protocol; no singletons. Enables mocking without a test framework.
-- **`UserDefaults` for follow state** — the payload is `Set<Int>`; Core Data would be disproportionate. `FollowRepositoryProtocol` makes swapping it a one-file change.
-- **Disk cache for offline fallback** — `FileUserCache` stores the last successful response as JSON. On launch without a network, users see cached content rather than a blank screen.
-- **`ImageLoader` actor** — cache reads, writes, and in-flight deduplication are isolated inside the actor; no manual locking needed at call sites.
-- **Diffable data source** — follow toggles update only the affected row; avoids full-list reloads on state change.
-
-## Error Handling
-
-Three distinct failure states, each with a different UI response:
-
-1. **Stale cache** — network failed but disk cache is available. Cached rows are shown with a banner indicating data may be out of date.
-2. **Hard failure, no cache** — full-screen error view with a message and a "Try Again" button.
-3. **Refresh failure over existing content** — current list stays visible; an alert offers a retry.
+- **MVVM + Coordinator** — keeps view controllers thin and view models free of UIKit, so they can be unit-tested directly. Navigation lives in the coordinator, not scattered across view controllers.
+- **Protocol-backed data layer** — all dependencies are injected via protocols; no singletons. Every layer can be replaced with a test double without a mocking framework.
+- **`UserDefaults` for follow state** — the payload is a `Set<Int>`; Core Data would be disproportionate. `FollowRepositoryProtocol` isolates the storage choice so swapping it later is a one-file change.
+- **Closure bindings** — straightforward ViewModel → ViewController communication for a two-screen app; no reactive framework needed.
 
 ## Testing
 
@@ -94,7 +82,7 @@ All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass;
 
 **Unit tests** cover decoding, networking, image loading, follow repository, file cache, list view model state transitions and filters, detail view model, cell formatting, error copy, and initials generation.
 
-**UI tests** (six XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, and detail navigation — driven by a debug launch flag that injects a stub service. Tests pass on both iPhone and iPad simulators.
+**UI tests** (eight XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, detail navigation, and portrait/landscape layout — driven by a debug launch flag that injects a stub service. Tests pass on both iPhone and iPad simulators.
 
 ```bash
 # iPhone
@@ -110,26 +98,23 @@ xcodebuild -project StackOverflowUsers.xcodeproj \
 
 ## Tradeoffs
 
-Prioritised correctness, clean separation, and testability for the core requirements. A few lightweight additions — offline cache, a detail screen, pull-to-refresh, segmented filter, and accessibility support — were included where they improved resilience or usability without adding architectural complexity or third-party dependencies.
-
-Deliberately avoided: generic HTTP interceptor chains, Core Data for a simple key-value follow store, and snapshot tests (acceptable tradeoff at this scope).
+Prioritised clean layer separation, dependency injection, and unit-testable view models. Chose `UserDefaults` over Core Data because the data model is trivial. Avoided third-party libraries for both production and test code, as the brief required.
 
 ## Notes
 
 - The Stack Exchange API requires HTTPS; no `NSAllowsArbitraryLoads` exception is added.
-- Some API fields listed in the brief schema are optional or typed differently in the live API; the implementation handles these defensively (optional `accept_rate`, integer badge counts, HTML-escaped display names).
-- Gravatar URLs may use `http://`; these fall back to a deterministically-coloured initials placeholder rather than adding an ATS exception.
+- Some API fields listed in the brief schema are optional or typed differently in the live API; the implementation handles these defensively (`accept_rate` is optional, badge counts are integers, display names may be HTML-escaped).
+- Gravatar profile image URLs may use `http://`; these fall back to a deterministically-coloured initials placeholder rather than adding an ATS exception.
 - Unauthenticated requests are capped at 300/day per IP. Copy `Config/Local.xcconfig.example` → `Config/Local.xcconfig` and add a free [Stack Apps key](https://stackapps.com/apps/oauth/register) to raise the limit.
 
 ## Reviewer Guide
 
-Quickest path through the code:
+Quickest path through the required flow:
 
-- `UserListViewModel` — state machine and user intents
+- `UserListViewModel` — state machine, loading, and follow intents
 - `UserService` — URL assembly, decoding, error mapping
-- `UserDefaultsFollowRepository` + `FileUserCache` — persistence and offline fallback
-- `ImageLoader` — actor-based image cache
-- `UserDetailViewModel` + `BadgePillView` — detail screen
+- `UserDefaultsFollowRepository` — follow persistence
+- `UserCell` — cell configuration and follow UI
 
 ---
 
