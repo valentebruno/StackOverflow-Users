@@ -15,11 +15,11 @@ final class AppErrorTests: XCTestCase {
         XCTAssertTrue(message.contains("503"))
     }
 
-    func test_userFacingMessage_apiError_includesNameAndMessage() {
-        let error = AppError.apiError(id: 502, name: "throttle_violation", message: "slow down")
-        let message = error.userFacingMessage
-        XCTAssertTrue(message.contains("throttle_violation"))
-        XCTAssertTrue(message.contains("slow down"))
+    func test_userFacingMessage_apiError_isUserFriendlyAndDistinct() {
+        let message = AppError.apiError(id: 502, name: "throttle_violation", message: "slow down").userFacingMessage
+        XCTAssertFalse(message.isEmpty)
+        XCTAssertNotEqual(message, AppError.networkUnavailable.userFacingMessage)
+        XCTAssertFalse(message.contains("throttle_violation"), "Raw API name should not appear in user-facing copy")
     }
 
     func test_userFacingMessage_decodingError_isDistinctFromNetwork() {
