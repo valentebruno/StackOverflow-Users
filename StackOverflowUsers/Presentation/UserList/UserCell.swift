@@ -27,9 +27,8 @@ final class UserCell: UITableViewCell {
 
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .body)
+        StackOverflowTypography.apply(.body3, weight: .regular, to: label)
         label.textColor = StackOverflowPalette.textPrimary
-        label.adjustsFontForContentSizeCategory = true
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -37,9 +36,8 @@ final class UserCell: UITableViewCell {
 
     private let reputationLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .footnote)
+        StackOverflowTypography.apply(.body1, weight: .regular, to: label)
         label.textColor = StackOverflowPalette.textSecondary
-        label.adjustsFontForContentSizeCategory = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -186,6 +184,7 @@ final class UserCell: UITableViewCell {
         config.title = isFollowed ? "Unfollow" : "Follow"
         config.image = UIImage(systemName: isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
         config.imagePadding = 4
+        config.titleTextAttributesTransformer = StackOverflowTypography.buttonTextTransformer(.body1)
         config.baseForegroundColor = isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
         config.baseBackgroundColor = isFollowed
             ? StackOverflowPalette.danger.withAlphaComponent(0.12)

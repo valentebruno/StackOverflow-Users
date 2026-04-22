@@ -14,11 +14,19 @@ final class FilterHeaderView: UIView {
         control.selectedSegmentIndex = 0
         control.selectedSegmentTintColor = StackOverflowPalette.accent
         control.setTitleTextAttributes(
-            [.foregroundColor: StackOverflowPalette.textPrimary],
+            StackOverflowTypography.textAttributes(
+                .body2,
+                weight: .medium,
+                color: StackOverflowPalette.textPrimary
+            ),
             for: .normal
         )
         control.setTitleTextAttributes(
-            [.foregroundColor: StackOverflowPalette.onStrongColor],
+            StackOverflowTypography.textAttributes(
+                .body2,
+                weight: .semibold,
+                color: StackOverflowPalette.onStrongColor
+            ),
             for: .selected
         )
         control.translatesAutoresizingMaskIntoConstraints = false
@@ -47,10 +55,37 @@ final class FilterHeaderView: UIView {
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory else {
+            return
+        }
+        updateTypography()
+    }
+
     // MARK: - Actions
 
     @objc private func selectionChanged() {
         let filter: UserListViewModel.Filter = segmentedControl.selectedSegmentIndex == 1 ? .followed : .all
         onFilterChanged?(filter)
+    }
+
+    private func updateTypography() {
+        segmentedControl.setTitleTextAttributes(
+            StackOverflowTypography.textAttributes(
+                .body2,
+                weight: .medium,
+                color: StackOverflowPalette.textPrimary
+            ),
+            for: .normal
+        )
+        segmentedControl.setTitleTextAttributes(
+            StackOverflowTypography.textAttributes(
+                .body2,
+                weight: .semibold,
+                color: StackOverflowPalette.onStrongColor
+            ),
+            for: .selected
+        )
     }
 }

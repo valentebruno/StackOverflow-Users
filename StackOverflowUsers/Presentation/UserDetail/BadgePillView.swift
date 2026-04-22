@@ -28,9 +28,8 @@ final class BadgePillView: UIStackView {
 
     private let countLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .callout)
+        StackOverflowTypography.apply(.body2, weight: .regular, to: label)
         label.textColor = StackOverflowPalette.textPrimary
-        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 

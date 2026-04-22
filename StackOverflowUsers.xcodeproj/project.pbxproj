@@ -43,6 +43,7 @@
 		C01455A7BDE0DF10F47800E7 /* UserPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67148707C19EF66F223D5742 /* UserPage.swift */; };
 		C0296036D365B38F16B40AAD /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C036202654C7052A4E46E6AB /* UserDetailViewController.swift */; };
 		C0CAFCA4CC22FE9386C480CE /* InitialsImageGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965CDF9EA902666A3CD5AA85 /* InitialsImageGeneratorTests.swift */; };
+		C22D936DF6F15DBF111567A8 /* StackOverflowTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D77A602CB7FC91B6905FAC /* StackOverflowTypography.swift */; };
 		C5CE871562AAB8F7D7202BE0 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C32C8912CB315F609390E61 /* MockURLProtocol.swift */; };
 		D8BB61E1A70CE8ADFAB79656 /* BadgePillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57D8376BFA747824BE117C91 /* BadgePillView.swift */; };
 		DC76230CFD054B1DC1DA7AD2 /* InitialsImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48976274696155B90FBD74CB /* InitialsImageGenerator.swift */; };
@@ -103,6 +104,7 @@
 		915D5B5D0583A98B9D4F7B13 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		9478FDD56E504FDE9EAED78B /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		965CDF9EA902666A3CD5AA85 /* InitialsImageGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialsImageGeneratorTests.swift; sourceTree = "<group>"; };
+		98D77A602CB7FC91B6905FAC /* StackOverflowTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackOverflowTypography.swift; sourceTree = "<group>"; };
 		A18B8EB755F00FF057C56185 /* String+HTMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLEntities.swift"; sourceTree = "<group>"; };
 		A58DBD995B69302F317FFD7A /* Development.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Development.xcconfig; sourceTree = "<group>"; };
 		A9E5A054471B38D4BFF7A537 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				71C55044D75DB83FA203EF88 /* StackOverflowPalette.swift */,
+				98D77A602CB7FC91B6905FAC /* StackOverflowTypography.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -515,6 +518,7 @@
 				7CEFBBEA2E8F2D8B8AD55831 /* SplashViewController.swift in Sources */,
 				78185A73440F3E3AA7C937FF /* StackExchangeResponse.swift in Sources */,
 				4642373E46AAC028E1D40A02 /* StackOverflowPalette.swift in Sources */,
+				C22D936DF6F15DBF111567A8 /* StackOverflowTypography.swift in Sources */,
 				AA83F8D675471F0139748C04 /* String+HTMLEntities.swift in Sources */,
 				5E3C186212C74DA691E36284 /* UITestingHooks.swift in Sources */,
 				367B1E58F5736731C532C177 /* User.swift in Sources */,

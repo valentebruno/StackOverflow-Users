@@ -62,8 +62,7 @@ final class UserListViewController: UIViewController {
 
     private lazy var staleBannerLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .footnote)
-        label.adjustsFontForContentSizeCategory = true
+        StackOverflowTypography.apply(.body1, weight: .medium, to: label)
         label.textColor = StackOverflowPalette.black600
         label.textAlignment = .center
         label.numberOfLines = 2

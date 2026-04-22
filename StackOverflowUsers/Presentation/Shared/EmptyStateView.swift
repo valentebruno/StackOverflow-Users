@@ -22,9 +22,8 @@ final class EmptyStateView: UIView {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .headline)
+        StackOverflowTypography.apply(.subheading, weight: .semibold, to: label)
         label.textColor = StackOverflowPalette.textPrimary
-        label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -34,9 +33,8 @@ final class EmptyStateView: UIView {
 
     private let messageLabel: UILabel = {
         let label = UILabel()
-        label.font = .preferredFont(forTextStyle: .body)
+        StackOverflowTypography.apply(.body2, weight: .regular, to: label)
         label.textColor = StackOverflowPalette.textSecondary
-        label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -47,6 +45,7 @@ final class EmptyStateView: UIView {
         var config = UIButton.Configuration.filled()
         config.title = "Try Again"
         config.cornerStyle = .capsule
+        config.titleTextAttributesTransformer = StackOverflowTypography.buttonTextTransformer(.body2)
         config.baseBackgroundColor = StackOverflowPalette.primaryAction
         config.baseForegroundColor = StackOverflowPalette.onStrongColor
         let button = UIButton(configuration: config)
