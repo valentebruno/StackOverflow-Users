@@ -1,5 +1,7 @@
 import Foundation
 
+#if DEBUG
+
 // MARK: - UITestingHooks
 
 enum UITestingHooks {
@@ -70,3 +72,5 @@ private final class StubUserService: UserServiceProtocol, @unchecked Sendable {
         )
     ]
 }
+
+#endif

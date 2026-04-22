@@ -17,6 +17,7 @@ final class AppCoordinator: Coordinator {
         let followRepository: FollowRepositoryProtocol
         let userCache: UserCacheProtocol?
 
+        #if DEBUG
         if UITestingHooks.isRunning {
             userService      = UITestingHooks.makeUserService()
             followRepository = UITestingHooks.makeFollowRepository()
@@ -26,6 +27,11 @@ final class AppCoordinator: Coordinator {
             followRepository = UserDefaultsFollowRepository()
             userCache        = FileUserCache()
         }
+        #else
+        userService      = UserService()
+        followRepository = UserDefaultsFollowRepository()
+        userCache        = FileUserCache()
+        #endif
 
         let imageLoader = ImageLoader.shared
 

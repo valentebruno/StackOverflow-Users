@@ -61,6 +61,25 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: StackOverflowUsers
 schemes:
+  StackOverflowUsers:
+    build:
+      targets:
+        StackOverflowUsers: all
+      config: Development
+    run:
+      config: Development
+    test:
+      config: Development
+      targets:
+        - StackOverflowUsersTests
+        - StackOverflowUsersUITests
+      gatherCoverageData: false
+    profile:
+      config: Development
+    analyze:
+      config: Development
+    archive:
+      config: Development
   StackOverflowUsers (Development):
     build:
       targets:
@@ -88,7 +107,7 @@ schemes:
     run:
       config: Production
     test:
-      config: Production
+      config: Development
       targets:
         - StackOverflowUsersTests
         - StackOverflowUsersUITests

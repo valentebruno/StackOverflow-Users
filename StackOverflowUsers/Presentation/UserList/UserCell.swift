@@ -98,6 +98,9 @@ final class UserCell: UITableViewCell {
         imageLoader: ImageLoading,
         onFollowTapped: @escaping () -> Void
     ) {
+        imageLoadTask?.cancel()
+        imageLoadTask = nil
+
         let previousModel = lastConfiguredModel
         self.onFollowTapped = onFollowTapped
 
@@ -267,4 +270,3 @@ final class UserCell: UITableViewCell {
         }
     }
 }
-

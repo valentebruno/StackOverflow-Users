@@ -22,23 +22,25 @@ The project file is generated from `project.yml`; install [xcodegen](https://git
 
 ## Schemes
 
-Two shared schemes ship with the project, each bound to its own xcconfig in `Config/`:
+Three shared schemes ship with the project. `StackOverflowUsers` is the default reviewer-friendly scheme; the suffixed schemes expose the environment-specific run/archive settings.
 
-| Scheme | Configuration | Bundle ID | Display name |
-|---|---|---|---|
-| `StackOverflowUsers (Development)` | `Development` (debug, `ENABLE_TESTABILITY = YES`) | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
-| `StackOverflowUsers (Production)` | `Production` (whole-module optimisation) | `com.brunovalente.StackOverflowUsers` | `Stack Users` |
+| Scheme | Run/archive configuration | Test configuration | Bundle ID | Display name |
+|---|---|---|---|---|
+| `StackOverflowUsers` | `Development` | `Development` | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
+| `StackOverflowUsers (Development)` | `Development` | `Development` | `com.brunovalente.StackOverflowUsers.dev` | `Stack Users Dev` |
+| `StackOverflowUsers (Production)` | `Production` | `Development` | `com.brunovalente.StackOverflowUsers` | `Stack Users` |
 
-The display name, bundle ID, API base URL, and optional Stack Apps API key flow through the xcconfig files into `Info.plist`. `Config/Local.xcconfig` is git-ignored, so a personal API key never ends up in the repo — `Config/Local.xcconfig.example` shows the shape.
+The display name, bundle ID, API base URL, and optional Stack Apps API key flow through the xcconfig files into `Info.plist`. `Development.xcconfig` and `Production.xcconfig` optionally include `Config/Local.xcconfig`, which is git-ignored so a personal API key never ends up in the repo — `Config/Local.xcconfig.example` shows the shape.
 
 ## What It Does
 
 - Fetches the top 20 users on launch, with infinite-scroll pagination that respects the API's `has_more` flag.
 - Each row shows a circular avatar, display name, and locale-formatted reputation.
 - Follow / unfollow toggles from a button tap, a leading swipe action, or a VoiceOver custom action. When followed, the row shows **both** a blue checkmark indicator and a tinted "Unfollow" button (the brief asks for an indicator *and* an unfollow option, so both are present at once).
-- A segmented control in the table header filters between **All** and **Followed** users.
+- A segmented control below the navigation title filters between **All** and **Followed** users, and remains visible in empty/error states so the user can switch back.
 - Tapping a row pushes a detail screen with a larger avatar, gold/silver/bronze badge pills, accept rate, location, and an "Open on Stack Overflow" button.
 - The supplied Stack Overflow image is used as the app icon through the asset catalog's `AppIcon` set.
+- A centered Stack Overflow launch screen is provided via `LaunchScreen.storyboard`.
 - The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
 - Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
 
@@ -133,11 +135,11 @@ All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass 
 
 ### End-to-end UI tests (`StackOverflowUsersUITests`)
 
-Five XCUITest cases driven by a `-UITests` launch flag that swaps in a stub service and an ephemeral follow store:
+Five XCUITest cases driven by a debug-only `-UITests` launch flag that swaps in a stub service and an ephemeral follow store:
 
 - Launch renders the top users.
 - Tapping follow flips the composed accessibility label and shows the "Unfollow" button.
-- Followed filter shows the "No followed users yet" empty state when nothing is followed.
+- Followed filter shows the "No followed users yet" empty state when nothing is followed, then switches back to All.
 - Follow-then-filter shows only the followed user.
 - Tapping a row pushes the detail with an Open-profile button.
 
@@ -145,11 +147,17 @@ Five XCUITest cases driven by a `-UITests` launch flag that swaps in a stub serv
 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
-  -scheme 'StackOverflowUsers (Development)' \
+  -scheme 'StackOverflowUsers' \
   -destination 'platform=iOS Simulator,name=iPhone 16' test
 ```
 
-Swap `(Development)` for `(Production)` to run the release-optimised build; both schemes pass the full suite.
+The Production scheme keeps its Test action on the Development configuration so `@testable import` remains available. To verify the release-optimised app build, run:
+
+```bash
+xcodebuild -project StackOverflowUsers.xcodeproj \
+  -scheme 'StackOverflowUsers (Production)' \
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
+```
 
 ## Tradeoffs
 

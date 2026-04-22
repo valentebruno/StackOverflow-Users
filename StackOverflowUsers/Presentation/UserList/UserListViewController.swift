@@ -38,6 +38,7 @@ final class UserListViewController: UIViewController {
         let view = EmptyStateView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
+        view.backgroundColor = .systemBackground
         view.onRetry = { [weak self] in self?.viewModel.retry() }
         return view
     }()
@@ -49,7 +50,8 @@ final class UserListViewController: UIViewController {
     }()
 
     private lazy var filterHeaderView: FilterHeaderView = {
-        let header = FilterHeaderView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 56))
+        let header = FilterHeaderView()
+        header.translatesAutoresizingMaskIntoConstraints = false
         header.onFilterChanged = { [weak self] filter in
             self?.viewModel.setFilter(filter)
         }
@@ -73,6 +75,7 @@ final class UserListViewController: UIViewController {
 
     private var itemModels: [Int: UserCellModel] = [:]
     private lazy var dataSource = makeDataSource()
+    private var staleBannerHeightConstraint: NSLayoutConstraint?
 
     // MARK: - Init
 
@@ -97,30 +100,14 @@ final class UserListViewController: UIViewController {
         viewModel.load()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        resizeTableHeaderIfNeeded()
-    }
-
-    private func resizeTableHeaderIfNeeded() {
-        guard let header = tableView.tableHeaderView else { return }
-        let targetWidth = tableView.bounds.width
-        guard targetWidth > 0 else { return }
-        let size = header.systemLayoutSizeFitting(
-            CGSize(width: targetWidth, height: UIView.layoutFittingCompressedSize.height),
-            withHorizontalFittingPriority: .required,
-            verticalFittingPriority: .fittingSizeLevel
-        )
-        if header.frame.size != size || header.frame.width != targetWidth {
-            header.frame = CGRect(x: 0, y: 0, width: targetWidth, height: max(size.height, 56))
-            tableView.tableHeaderView = header
-        }
-    }
-
     // MARK: - Setup
 
     private func setupViews() {
+        let staleHeight = staleBannerLabel.heightAnchor.constraint(equalToConstant: 0)
+        staleBannerHeightConstraint = staleHeight
+
         view.addSubview(staleBannerLabel)
+        view.addSubview(filterHeaderView)
         view.addSubview(tableView)
         view.addSubview(emptyStateView)
         view.addSubview(loadingIndicator)
@@ -128,20 +115,24 @@ final class UserListViewController: UIViewController {
         tableView.dataSource = dataSource
         tableView.delegate = self
         tableView.refreshControl = refreshControl
-        tableView.tableHeaderView = filterHeaderView
 
         NSLayoutConstraint.activate([
             staleBannerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             staleBannerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             staleBannerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            staleBannerLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 32),
+            staleHeight,
 
-            tableView.topAnchor.constraint(equalTo: staleBannerLabel.bottomAnchor),
+            filterHeaderView.topAnchor.constraint(equalTo: staleBannerLabel.bottomAnchor),
+            filterHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            filterHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            filterHeaderView.heightAnchor.constraint(equalToConstant: 64),
+
+            tableView.topAnchor.constraint(equalTo: filterHeaderView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyStateView.topAnchor.constraint(equalTo: filterHeaderView.bottomAnchor),
             emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -192,7 +183,7 @@ final class UserListViewController: UIViewController {
             refreshControl.endRefreshing()
             setStaleBanner(visible: false)
             apply([], animated: true)
-            tableView.isHidden = true
+            tableView.isHidden = false
             emptyStateView.isHidden = false
             emptyStateView.configure(
                 title:       UserListStateCopy.emptyTitle(for: reason),
@@ -207,7 +198,8 @@ final class UserListViewController: UIViewController {
             setStaleBanner(visible: false)
 
             if stale.isEmpty {
-                tableView.isHidden = true
+                apply([], animated: true)
+                tableView.isHidden = false
                 emptyStateView.isHidden = false
                 emptyStateView.configure(
                     title:   UserListStateCopy.errorTitle(for: error),
@@ -224,6 +216,7 @@ final class UserListViewController: UIViewController {
 
     private func setStaleBanner(visible: Bool, error: AppError? = nil) {
         staleBannerLabel.isHidden = !visible
+        staleBannerHeightConstraint?.constant = visible ? 36 : 0
         guard visible else { return }
         let reason = error.map(UserListStateCopy.errorTitle(for:)) ?? "Offline"
         staleBannerLabel.text = "Showing saved users · \(reason)"
