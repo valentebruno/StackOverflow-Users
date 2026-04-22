@@ -158,6 +158,14 @@ final class UserDetailViewController: UIViewController {
         contentStack.setCustomSpacing(20, after: avatarImageView)
         contentStack.setCustomSpacing(24, after: badgesStack)
 
+        // On iPad the scroll view stretches the full window width; cap the content at
+        // a readable measure and centre it while still letting it shrink on iPhone.
+        let widthToFrame = contentStack.widthAnchor.constraint(
+            equalTo: scrollView.frameLayoutGuide.widthAnchor,
+            constant: -48
+        )
+        widthToFrame.priority = .defaultHigh
+
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -166,9 +174,9 @@ final class UserDetailViewController: UIViewController {
 
             contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 32),
             contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -32),
-            contentStack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: 24),
-            contentStack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -24),
-            contentStack.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant: -48),
+            contentStack.centerXAnchor.constraint(equalTo: scrollView.contentLayoutGuide.centerXAnchor),
+            contentStack.widthAnchor.constraint(lessThanOrEqualToConstant: 560),
+            widthToFrame,
 
             avatarImageView.widthAnchor.constraint(equalToConstant: 120),
             avatarImageView.heightAnchor.constraint(equalToConstant: 120)

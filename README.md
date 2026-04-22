@@ -15,7 +15,7 @@ A small iOS app that shows the top 20 Stack Overflow users by reputation and let
 open StackOverflowUsers.xcodeproj
 ```
 
-Pick an iOS 16+ iPhone simulator and hit run. Two shared schemes ship with the project:
+Pick an iOS 16+ iPhone or iPad simulator and hit run. Two shared schemes ship with the project:
 
 | Scheme | Configuration | Bundle ID | Display name |
 |---|---|---|---|
@@ -26,7 +26,7 @@ Build settings live in `Config/Shared.xcconfig`, `Config/Development.xcconfig`, 
 
 If you'd rather (re)generate the project from scratch, install [xcodegen](https://github.com/yonaskolb/XcodeGen) and run `xcodegen generate` — `project.yml` is the source of truth for the project file.
 
-The target is iPhone-only in portrait. I scoped it deliberately rather than shipping an untested Universal layout — the rest of the checklist matters more at this scope.
+The target is Universal (`TARGETED_DEVICE_FAMILY = "1,2"`) and supports all standard orientations on both idioms. On iPad the list stretches to the full table width (UIKit handles that natively) while the detail screen caps its content at 560 pt centred, so reading measure stays comfortable at any iPad size.
 
 ## What it does
 
@@ -124,9 +124,7 @@ Some users' `profile_image` URLs still point to Gravatar over plain `http://`. A
 
 ## Tests
 
-GitHub Actions workflow: [`.github/workflows/ios.yml`](.github/workflows/ios.yml) — `macos-latest`, picks the newest available iPhone simulator at runtime, runs `build-for-testing` then `test-without-building`, and uploads the `.xcresult` bundle as an artifact.
-
-To run the same thing locally:
+Tests are run locally — there's no GitHub Actions workflow committed (the account hosting the repo has an unrelated Actions billing lock, and a red CI badge is a worse first impression than none). Every test is reproducible on your machine in seconds:
 
 ```bash
 xcodebuild -project StackOverflowUsers.xcodeproj \
