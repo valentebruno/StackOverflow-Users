@@ -29,7 +29,7 @@ final class SplashViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = StackOverflowPalette.contentBackground
         setupLayout()
     }
 

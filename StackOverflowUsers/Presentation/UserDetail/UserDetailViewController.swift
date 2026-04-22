@@ -34,7 +34,7 @@ final class UserDetailViewController: UIViewController {
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
         view.layer.cornerRadius = 60
-        view.backgroundColor = .secondarySystemFill
+        view.backgroundColor = StackOverflowPalette.componentAltBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         view.accessibilityLabel = "User avatar"
         return view
@@ -43,6 +43,7 @@ final class UserDetailViewController: UIViewController {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .largeTitle)
+        label.textColor = StackOverflowPalette.textPrimary
         label.adjustsFontForContentSizeCategory = true
         label.numberOfLines = 0
         label.textAlignment = .center
@@ -53,7 +54,7 @@ final class UserDetailViewController: UIViewController {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .title3)
         label.adjustsFontForContentSizeCategory = true
-        label.textColor = .secondaryLabel
+        label.textColor = StackOverflowPalette.textSecondary
         label.textAlignment = .center
         return label
     }()
@@ -62,7 +63,7 @@ final class UserDetailViewController: UIViewController {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
         label.adjustsFontForContentSizeCategory = true
-        label.textColor = .tertiaryLabel
+        label.textColor = StackOverflowPalette.textTertiary
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -72,7 +73,7 @@ final class UserDetailViewController: UIViewController {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .footnote)
         label.adjustsFontForContentSizeCategory = true
-        label.textColor = .secondaryLabel
+        label.textColor = StackOverflowPalette.textSecondary
         label.textAlignment = .center
         return label
     }()
@@ -93,6 +94,8 @@ final class UserDetailViewController: UIViewController {
         config.image = UIImage(systemName: "arrow.up.right.square")
         config.imagePadding = 8
         config.cornerStyle = .large
+        config.baseBackgroundColor = StackOverflowPalette.primaryAction
+        config.baseForegroundColor = StackOverflowPalette.onStrongColor
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.accessibilityIdentifier = "open-profile-button"
@@ -124,7 +127,7 @@ final class UserDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = StackOverflowPalette.appBackground
         title = viewModel.displayName
         navigationItem.largeTitleDisplayMode = .never
         setupLayout()

@@ -43,6 +43,7 @@ The display name, bundle ID, API base URL, and optional Stack Apps API key flow 
 - A centered Stack Overflow splash screen is built in UIKit code; there is no launch storyboard.
 - The last successful first-page response is cached on disk. Follow state persists in `UserDefaults`, keyed by `user_id`.
 - Pull-to-refresh, adaptive Dynamic Type (cell flips to a vertical stack at accessibility sizes), and an accessibility announcement when the follow state flips.
+- UIKit colors are centralized in `StackOverflowPalette`, using Stack Overflow brand stops for orange, blue, black, gray, and yellow while keeping neutral backgrounds dominant.
 
 ## Requirement Coverage
 

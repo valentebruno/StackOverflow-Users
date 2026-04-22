@@ -15,6 +15,7 @@
 		1AF1A9355B5FEE1FF10129CC /* UserCellModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */; };
 		2C5725AF1A64653036DDEAB2 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9478FDD56E504FDE9EAED78B /* UserService.swift */; };
 		367B1E58F5736731C532C177 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9C31F5499BEB2C83C5B924 /* User.swift */; };
+		4642373E46AAC028E1D40A02 /* StackOverflowPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C55044D75DB83FA203EF88 /* StackOverflowPalette.swift */; };
 		4D67DEEE6CC1ACE1E9F650E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41674755A509D5978BFA7F4 /* AppDelegate.swift */; };
 		4E1CF1DF39ECFF9F92B4DD36 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE997156C239CB20EEAB7B8 /* Coordinator.swift */; };
 		53E9E6917CDFA43F54C13F31 /* ImageLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A9B3CE989F6F897CD080032 /* ImageLoaderTests.swift */; };
@@ -88,6 +89,7 @@
 		596830B156A6954509F30542 /* FileUserCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUserCacheTests.swift; sourceTree = "<group>"; };
 		5C21AADE24E568EDEF10A44A /* UserCellModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellModelTests.swift; sourceTree = "<group>"; };
 		67148707C19EF66F223D5742 /* UserPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPage.swift; sourceTree = "<group>"; };
+		71C55044D75DB83FA203EF88 /* StackOverflowPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackOverflowPalette.swift; sourceTree = "<group>"; };
 		7463824815493DD6A80E6368 /* UITestingHooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestingHooks.swift; sourceTree = "<group>"; };
 		765A5A294023DB53CDF32551 /* UserListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListViewModelTests.swift; sourceTree = "<group>"; };
 		780D52EFE9BB7653753F648C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -165,6 +167,7 @@
 			children = (
 				7C90A861C594A74FEA4F80E4 /* App */,
 				38079468B87D25F2B1830684 /* Data */,
+				47B6CA89725BD18F96E099F8 /* DesignSystem */,
 				A70577635A442DA22EC2EF40 /* Domain */,
 				953C5D3ECC4B46FCC0F5A524 /* Foundation */,
 				39E280AF3B7A902295B7E7E5 /* Presentation */,
@@ -189,6 +192,14 @@
 				292E95D7B6F51D424E1B85F7 /* UserServiceTests.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		47B6CA89725BD18F96E099F8 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				71C55044D75DB83FA203EF88 /* StackOverflowPalette.swift */,
+			);
+			path = DesignSystem;
 			sourceTree = "<group>";
 		};
 		7C90A861C594A74FEA4F80E4 /* App */ = {
@@ -503,6 +514,7 @@
 				9B9DF1F67C5CE0936C5AD09C /* SceneDelegate.swift in Sources */,
 				7CEFBBEA2E8F2D8B8AD55831 /* SplashViewController.swift in Sources */,
 				78185A73440F3E3AA7C937FF /* StackExchangeResponse.swift in Sources */,
+				4642373E46AAC028E1D40A02 /* StackOverflowPalette.swift in Sources */,
 				AA83F8D675471F0139748C04 /* String+HTMLEntities.swift in Sources */,
 				5E3C186212C74DA691E36284 /* UITestingHooks.swift in Sources */,
 				367B1E58F5736731C532C177 /* User.swift in Sources */,

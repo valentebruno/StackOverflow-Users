@@ -12,6 +12,15 @@ final class FilterHeaderView: UIView {
     private let segmentedControl: UISegmentedControl = {
         let control = UISegmentedControl(items: ["All", "Followed"])
         control.selectedSegmentIndex = 0
+        control.selectedSegmentTintColor = StackOverflowPalette.accent
+        control.setTitleTextAttributes(
+            [.foregroundColor: StackOverflowPalette.textPrimary],
+            for: .normal
+        )
+        control.setTitleTextAttributes(
+            [.foregroundColor: StackOverflowPalette.onStrongColor],
+            for: .selected
+        )
         control.translatesAutoresizingMaskIntoConstraints = false
         control.accessibilityIdentifier = "filter-control"
         return control
@@ -21,6 +30,7 @@ final class FilterHeaderView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = StackOverflowPalette.appBackground
         addSubview(segmentedControl)
 
         let leading  = segmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16)

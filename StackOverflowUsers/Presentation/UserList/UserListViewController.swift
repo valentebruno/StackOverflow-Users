@@ -19,6 +19,8 @@ final class UserListViewController: UIViewController {
 
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .plain)
+        table.backgroundColor = StackOverflowPalette.appBackground
+        table.separatorColor = StackOverflowPalette.separator
         table.register(UserCell.self, forCellReuseIdentifier: UserCell.reuseIdentifier)
         table.rowHeight = UITableView.automaticDimension
         table.estimatedRowHeight = 72
@@ -38,7 +40,7 @@ final class UserListViewController: UIViewController {
         let view = EmptyStateView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isHidden = true
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = StackOverflowPalette.appBackground
         view.onRetry = { [weak self] in self?.viewModel.retry() }
         return view
     }()
@@ -62,10 +64,10 @@ final class UserListViewController: UIViewController {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .footnote)
         label.adjustsFontForContentSizeCategory = true
-        label.textColor = .white
+        label.textColor = StackOverflowPalette.black600
         label.textAlignment = .center
         label.numberOfLines = 2
-        label.backgroundColor = .systemOrange
+        label.backgroundColor = StackOverflowPalette.warningBackground
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isHidden = true
         return label
@@ -94,7 +96,7 @@ final class UserListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Stack Overflow Users"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = StackOverflowPalette.appBackground
         setupViews()
         bindViewModel()
         viewModel.load()
@@ -315,7 +317,7 @@ extension UserListViewController: UITableViewDelegate {
             self?.viewModel.toggleFollow(userID: userID)
             done(true)
         }
-        action.backgroundColor = model.isFollowed ? .systemRed : .systemBlue
+        action.backgroundColor = model.isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
         action.image = UIImage(systemName: model.isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
         return UISwipeActionsConfiguration(actions: [action])
     }

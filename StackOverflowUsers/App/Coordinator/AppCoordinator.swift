@@ -13,6 +13,8 @@ final class AppCoordinator: Coordinator {
     }
 
     func start() {
+        configureAppearance()
+
         let splashViewController = SplashViewController()
         splashViewController.onFinish = { [weak self] in
             self?.showUserList(animated: true)
@@ -73,6 +75,23 @@ final class AppCoordinator: Coordinator {
         ) {
             self.window.rootViewController = self.navigationController
         }
+    }
+
+    private func configureAppearance() {
+        let navigationAppearance = UINavigationBarAppearance()
+        navigationAppearance.configureWithOpaqueBackground()
+        navigationAppearance.backgroundColor = StackOverflowPalette.contentBackground
+        navigationAppearance.titleTextAttributes = [
+            .foregroundColor: StackOverflowPalette.textPrimary
+        ]
+        navigationAppearance.largeTitleTextAttributes = [
+            .foregroundColor: StackOverflowPalette.textPrimary
+        ]
+
+        navigationController.navigationBar.tintColor = StackOverflowPalette.primaryAction
+        navigationController.navigationBar.standardAppearance = navigationAppearance
+        navigationController.navigationBar.compactAppearance = navigationAppearance
+        navigationController.navigationBar.scrollEdgeAppearance = navigationAppearance
     }
 
     // MARK: - Navigation

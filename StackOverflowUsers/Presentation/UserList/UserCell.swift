@@ -20,7 +20,7 @@ final class UserCell: UITableViewCell {
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
         iv.layer.cornerRadius = 22
-        iv.backgroundColor = .secondarySystemFill
+        iv.backgroundColor = StackOverflowPalette.componentAltBackground
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
     }()
@@ -28,6 +28,7 @@ final class UserCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
+        label.textColor = StackOverflowPalette.textPrimary
         label.adjustsFontForContentSizeCategory = true
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -37,7 +38,7 @@ final class UserCell: UITableViewCell {
     private let reputationLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .footnote)
-        label.textColor = .secondaryLabel
+        label.textColor = StackOverflowPalette.textSecondary
         label.adjustsFontForContentSizeCategory = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -57,7 +58,7 @@ final class UserCell: UITableViewCell {
     private let followedIndicator: UIImageView = {
         let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
         let iv = UIImageView(image: UIImage(systemName: "checkmark.seal.fill", withConfiguration: config))
-        iv.tintColor = .systemBlue
+        iv.tintColor = StackOverflowPalette.success
         iv.isHidden = true
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.setContentHuggingPriority(.required, for: .horizontal)
@@ -71,6 +72,8 @@ final class UserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
+        backgroundColor = StackOverflowPalette.contentBackground
+        contentView.backgroundColor = StackOverflowPalette.contentBackground
         setupLayout()
         followButton.addTarget(self, action: #selector(followButtonTapped), for: .touchUpInside)
     }
@@ -183,8 +186,10 @@ final class UserCell: UITableViewCell {
         config.title = isFollowed ? "Unfollow" : "Follow"
         config.image = UIImage(systemName: isFollowed ? "person.crop.circle.badge.minus" : "person.crop.circle.badge.plus")
         config.imagePadding = 4
-        config.baseForegroundColor = isFollowed ? .systemRed : .systemBlue
-        config.baseBackgroundColor = isFollowed ? .systemRed.withAlphaComponent(0.12) : .clear
+        config.baseForegroundColor = isFollowed ? StackOverflowPalette.danger : StackOverflowPalette.primaryAction
+        config.baseBackgroundColor = isFollowed
+            ? StackOverflowPalette.danger.withAlphaComponent(0.12)
+            : .clear
         followButton.configuration = config
         followButton.accessibilityLabel = isFollowed ? "Unfollow \(name)" : "Follow \(name)"
     }

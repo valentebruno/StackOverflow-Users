@@ -14,7 +14,7 @@ final class EmptyStateView: UIView {
     private let iconImageView: UIImageView = {
         let config = UIImage.SymbolConfiguration(pointSize: 48, weight: .regular)
         let iv = UIImageView(image: UIImage(systemName: "wifi.exclamationmark", withConfiguration: config))
-        iv.tintColor = .secondaryLabel
+        iv.tintColor = StackOverflowPalette.textSecondary
         iv.contentMode = .scaleAspectFit
         iv.translatesAutoresizingMaskIntoConstraints = false
         return iv
@@ -23,6 +23,7 @@ final class EmptyStateView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .headline)
+        label.textColor = StackOverflowPalette.textPrimary
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -34,7 +35,7 @@ final class EmptyStateView: UIView {
     private let messageLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .body)
-        label.textColor = .secondaryLabel
+        label.textColor = StackOverflowPalette.textSecondary
         label.adjustsFontForContentSizeCategory = true
         label.textAlignment = .center
         label.numberOfLines = 0
@@ -46,6 +47,8 @@ final class EmptyStateView: UIView {
         var config = UIButton.Configuration.filled()
         config.title = "Try Again"
         config.cornerStyle = .capsule
+        config.baseBackgroundColor = StackOverflowPalette.primaryAction
+        config.baseForegroundColor = StackOverflowPalette.onStrongColor
         let button = UIButton(configuration: config)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

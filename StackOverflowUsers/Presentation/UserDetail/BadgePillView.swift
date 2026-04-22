@@ -10,9 +10,9 @@ final class BadgePillView: UIStackView {
 
         var tint: UIColor {
             switch self {
-            case .gold:   return .systemYellow
-            case .silver: return .systemGray
-            case .bronze: return .systemBrown
+            case .gold:   return StackOverflowPalette.yellow400
+            case .silver: return StackOverflowPalette.black300
+            case .bronze: return StackOverflowPalette.bronze300
             }
         }
     }
@@ -29,6 +29,7 @@ final class BadgePillView: UIStackView {
     private let countLabel: UILabel = {
         let label = UILabel()
         label.font = .preferredFont(forTextStyle: .callout)
+        label.textColor = StackOverflowPalette.textPrimary
         label.adjustsFontForContentSizeCategory = true
         return label
     }()

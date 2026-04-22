@@ -42,14 +42,14 @@ enum InitialsImageGenerator {
     }
 
     private static let swatches: [(UIColor, UIColor)] = [
-        (.systemBlue,   .white),
-        (.systemTeal,   .white),
-        (.systemIndigo, .white),
-        (.systemPurple, .white),
-        (.systemPink,   .white),
-        (.systemOrange, .white),
-        (.systemGreen,  .white),
-        (.systemBrown,  .white)
+        (StackOverflowPalette.blue400, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.orange400, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.black500, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.black400, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.red400, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.green400, StackOverflowPalette.onStrongColor),
+        (StackOverflowPalette.yellow400, StackOverflowPalette.black600),
+        (StackOverflowPalette.bronze300, StackOverflowPalette.onStrongColor)
     ]
 
     private static func palette(for seed: String) -> (UIColor, UIColor) {
