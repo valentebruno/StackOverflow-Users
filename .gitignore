@@ -42,3 +42,7 @@ playground.xcworkspace
 .cursor/
 .aider*
 
+# Local xcconfig overrides (api keys, personal base URLs, etc.)
+Config/Local.xcconfig
+*.local.xcconfig
+
