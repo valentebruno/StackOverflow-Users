@@ -65,9 +65,9 @@ ViewController → ViewModel → Repository / Service → API / Local Storage
 
 All tests run fully offline. Networking is stubbed via a `URLProtocol` subclass; persistence uses ephemeral `UserDefaults` suites and temp-directory cache files.
 
-**Unit tests** cover decoding, networking, image loading, follow repository, file cache, list view model state transitions and filters, detail view model, cell formatting, error copy, and initials generation.
+**Unit tests** (77) cover decoding, networking, image loading, follow repository, file cache, list view model state transitions and filters, detail view model, cell formatting, error copy, and initials generation.
 
-**UI tests** (eight XCUITest cases) cover launch, offline state, follow/unfollow interaction, filter behavior, detail navigation, and portrait/landscape layout — driven by a debug launch flag that injects a stub service. Tests pass on both iPhone and iPad simulators.
+**UI tests** (8) cover launch, offline state, follow/unfollow interaction, filter behavior, detail navigation, and portrait/landscape layout — driven by a debug launch flag that injects a stub service. All 85 tests pass on both iPhone and iPad simulators.
 
 ```bash
 # iPhone
